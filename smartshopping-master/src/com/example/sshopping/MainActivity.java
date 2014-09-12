@@ -50,12 +50,12 @@ public class MainActivity extends FragmentActivity {
 
 		this.actionBar = getActionBar();
 		
-		this.actionBar.setDisplayShowTitleEnabled(false);
-		this.actionBar.setDisplayHomeAsUpEnabled(false);
+		this.actionBar.setDisplayShowTitleEnabled(true);
+		this.actionBar.setDisplayHomeAsUpEnabled(true);
 		this.actionBar.setDisplayShowCustomEnabled(true);
 
 		this._fm = getSupportFragmentManager();
-		//this.switchFragment(new FragmentConnexion());
+		this.switchFragment(new EmptyFragment());
 	}
 	
 
