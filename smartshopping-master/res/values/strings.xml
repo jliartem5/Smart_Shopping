@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">Smart Shopping</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <color name="white">#FFFFFF</color>
+    <string-array name="liste_gares">
+        <item>Strasbourg</item>
+        <item>Colmar</item>
+        <item>Mulhouse-Ville</item>
+        <item>Volgelsheim</item>
+        <item>Bergerac</item>
+        <item>Périgueux</item>
+        <item>Arcachon</item>
+        <item>Mont-de-Marsan</item>
+        <item>Vichy</item>
+        <item>Clermont-Ferrand</item>
+        <item>Dunkerque</item>
+        <item>Royat-Chamalières</item>
+        <item>Caen</item>
+        <item>Cherbourg</item>
+        <item>Saint-Lô</item>
+        <item>Beaune</item>
+        <item>Dijon-Ville</item>
+        <item>Nevers</item>
+        <item>Mâcon-Ville</item>
+        <item>Paimpol</item>
+        <item>Dinan</item>
+        <item>Guingamp</item>
+        <item>Douai</item>
+        <item>Maubeuge</item>
+        <item>Lens</item>
+        <item>Tourcoing</item>
+        <item>Austerlitz</item>
+        <item>Bercy</item>
+        <item>Nord</item>
+        <item>Nancy-Ville</item>
+        <item>Bitche</item>
+        <item>Metz-Ville</item>
+    </string-array>
+</resources>
