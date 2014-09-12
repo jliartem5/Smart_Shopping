@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -10,12 +10,53 @@
         tools:context=".MainActivity"
         tools:ignore="MergeRootFrame" >
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="vertical"
             android:id="@+id/fragment_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-        </LinearLayout>
+
+            
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_autocomplete" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter"
+        android:textSize="20sp" />
+
+
+    <AutoCompleteTextView
+        android:id="@+id/autocomplet_produit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="" />
+    </LinearLayout>
+
+     <ScrollView
+        android:id="@+id/ScrollView11"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below = "@id/ll_autocomplete"
+        android:fillViewport="false" >
+
+	    <TableLayout
+	        android:id="@+id/table_produit"
+	        android:stretchColumns="0,1,2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+		</TableLayout>
+	</ScrollView>
+	
+   
+            
+        </RelativeLayout>
 
         <com.example.sshopping.views.MainSlideMenu
             android:layout_width="240dp"
@@ -26,4 +67,23 @@
             android:orientation="vertical" />
     </android.support.v4.widget.DrawerLayout>
 
-</FrameLayout>
+    	
+    <Button
+        android:id="@+id/btn_spped_shopping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/btn_supprime_prod"
+        android:text="SpeedShopping" />
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btn_supprime_prod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="Supprimer les produits cochés" />
+
+</RelativeLayout>
