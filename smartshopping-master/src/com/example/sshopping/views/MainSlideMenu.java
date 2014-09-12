@@ -15,7 +15,6 @@ import android.view.View.OnClickListener;
 
 /**
  * Classe permettant de gerer le slide menu de gauche. (vue)
- * C'est cette classe qui permet d'appeler/cree les fragments desires.
  * @author Shinthujan, Jian, Walid, Wally, Youssef
  */
 public class MainSlideMenu extends LinearLayout implements OnClickListener{
@@ -31,13 +30,29 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 		this._mainActivity = (MainActivity) context;
 		_mainActivity.getLayoutInflater().inflate(R.layout.view_slide_menu, this, true);
 		
+		this.findViewById(R.id.slide_menu_smartlist).setOnClickListener(this);
+		this.findViewById(R.id.slide_menu_plan).setOnClickListener(this);
+		this.findViewById(R.id.slide_menu_coupons).setOnClickListener(this);
+		this.findViewById(R.id.slide_menu_parametre).setOnClickListener(this);
+		this.findViewById(R.id.slide_menu_quit).setOnClickListener(this);
+		
 	}
 
 	@Override
 	public void onClick(View v) {
 		Log.i("LJ", "Click on the slide menu");
 		switch(v.getId()){
-			default:
+			case R.id.slide_menu_smartlist:
+				//this._mainActivity.switchFragment(new FragmentConnexion());
+				break;
+			case R.id.slide_menu_plan:
+				break;	
+			case R.id.slide_menu_coupons:
+				break;	
+			case R.id.slide_menu_parametre:
+				break;
+			case R.id.slide_menu_quit:
+				System.exit(0);
 				break;
 		}
 		this._mainActivity.closeSlideMenu();

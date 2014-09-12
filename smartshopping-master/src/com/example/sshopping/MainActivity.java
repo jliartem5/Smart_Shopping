@@ -71,6 +71,7 @@ public class MainActivity extends FragmentActivity {
 		this._drawerLayout = (DrawerLayout) findViewById(R.id.main_container);
 
 		this.actionBar = getActionBar();
+<<<<<<< HEAD
 
 		this.actionBar.setDisplayShowTitleEnabled(false);
 		this.actionBar.setDisplayHomeAsUpEnabled(false);
@@ -172,6 +173,15 @@ public class MainActivity extends FragmentActivity {
 		});
 
 		//this.switchFragment(new FragmentConnexion());
+=======
+		
+		this.actionBar.setDisplayShowTitleEnabled(true);
+		this.actionBar.setDisplayHomeAsUpEnabled(true);
+		this.actionBar.setDisplayShowCustomEnabled(true);
+
+		this._fm = getSupportFragmentManager();
+		this.switchFragment(new EmptyFragment());
+>>>>>>> origin/master
 	}
 
 

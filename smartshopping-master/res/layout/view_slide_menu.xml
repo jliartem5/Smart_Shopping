@@ -2,13 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/background_menu" >
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/slide_menu_consult_evt"
+        android:id="@+id/slide_menu_smartlist"
         android:background="@drawable/list_selector"
-        android:text="Btn01"/>
+        android:text="Ma Smart List"/>
+   	<Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/slide_menu_plan"
+        android:background="@drawable/list_selector"
+        android:text="Plan"/>
+        
+  	<Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/slide_menu_coupons"
+        android:background="@drawable/list_selector"
+        android:text="Mes coupons"/>
+        
+   	<Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/slide_menu_parametre"
+        android:background="@drawable/list_selector"
+        android:text="Parametres"/>
+        
+   	<Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/slide_menu_quit"
+        android:background="@drawable/list_selector"
+        android:text="Quitter"/>
 
 </LinearLayout>
