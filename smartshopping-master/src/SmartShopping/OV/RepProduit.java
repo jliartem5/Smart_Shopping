@@ -31,7 +31,6 @@ public class RepProduit extends OVRep {
             JSONObject jsonProduit = arrayProduit.getJSONObject(i);
             listeProduit.add(new OVProduit(jsonProduit.toString()));
         }
-        
     }
     
     public ArrayList<OVProduit> getListeProduit() {

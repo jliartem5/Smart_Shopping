@@ -17,7 +17,8 @@ public class WebServer {
 	
 	
 	public enum COMMANDE {
-		TousLesProduits, AjouterProduit
+		TousLesProduits, AjouterProduit,
+		GetSmartList, UpdateListeProduit
 	};
 	
 	// Design Pattern Singleton
@@ -38,8 +39,7 @@ public class WebServer {
 	
 	public JSONObject sendRequest(COMMANDE cmd, OVReq request) throws JSONException{
 		String finalURL = this.webBaseUrl + cmd.toString();
-		HttpClients http = new HttpClients();
-		JSONObject JSONrep = http.SendHttpPost(finalURL, request.toJSON());
+		JSONObject JSONrep = HttpClients.SendHttpPost(finalURL, request.toJSON());
 		
 		return JSONrep;
 	}

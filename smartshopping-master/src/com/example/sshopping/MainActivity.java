@@ -35,6 +35,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -71,7 +73,6 @@ public class MainActivity extends FragmentActivity {
 		this._drawerLayout = (DrawerLayout) findViewById(R.id.main_container);
 
 		this.actionBar = getActionBar();
-<<<<<<< HEAD
 
 		this.actionBar.setDisplayShowTitleEnabled(false);
 		this.actionBar.setDisplayHomeAsUpEnabled(false);
@@ -140,6 +141,16 @@ public class MainActivity extends FragmentActivity {
 					final CheckBox checkbox = new CheckBox(MainActivity.this);
 					checkbox.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 					checkbox.setTag(clickedProduit);
+					checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+						@Override
+						public void onCheckedChanged(CompoundButton arg0,
+								boolean arg1) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
 
 					// Creation textView
 					final TextView text = new TextView(MainActivity.this);
@@ -171,17 +182,13 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		});
-
-		//this.switchFragment(new FragmentConnexion());
-=======
 		
 		this.actionBar.setDisplayShowTitleEnabled(true);
 		this.actionBar.setDisplayHomeAsUpEnabled(true);
 		this.actionBar.setDisplayShowCustomEnabled(true);
 
 		this._fm = getSupportFragmentManager();
-		this.switchFragment(new EmptyFragment());
->>>>>>> origin/master
+		//this.switchFragment(new EmptyFragment());
 	}
 
 
@@ -229,6 +236,7 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 
+	
 	/**
 	 * Cette methode recoit en parametre un fragment et se charge de "switcher" du fragment courant vers
 	 * le fragment en parametre.

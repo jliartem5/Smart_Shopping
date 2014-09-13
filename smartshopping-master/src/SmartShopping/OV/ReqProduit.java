@@ -17,7 +17,7 @@ import SmartShopping.Remote.WebServer;
  */
 public class ReqProduit extends OVReq {
     
-    private OVProduit ovProduit; 
+    private OVProduit ovProduit;
 
     public OVProduit getOvProduit() {
         return ovProduit;
@@ -27,15 +27,17 @@ public class ReqProduit extends OVReq {
         this.ovProduit = ovProduit;
     }
     
-	public RepProduit sendRequestTousLesProduits() throws JSONException{
+	public RepProduit requestTousLesProduits() throws JSONException{
 		WebServer ws = WebServer.getInstance();		
 		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.TousLesProduits, this);
 		return new RepProduit(JSONrep.toString());
 	}
 	
-	public RepProduit sendRequestAjoutProduit(){
-		return null;
-		
+	public boolean requestAjoutProduit() throws JSONException{
+		WebServer ws = WebServer.getInstance();		
+		// this contient le produit à ajouter
+		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.AjouterProduit, this); 
+		return true;
 	}
     
 }
