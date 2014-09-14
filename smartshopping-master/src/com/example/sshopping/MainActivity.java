@@ -167,6 +167,15 @@ public class MainActivity extends FragmentActivity {
 		this._allProduits.add(new OVProduit(9,"RER", this._allCategorie.get(1), 10));
 		this._allProduits.add(new OVProduit(10,"B-shock", this._allCategorie.get(1), 10));
 
+		for(OVListeProduit prodToShow : this._mySmartList.getProduitsSmartList()){
+			
+			if(prodToShow.getSupprime() == true){
+				continue;
+			}
+			
+			this.AddProduitRowLineView(prodToShow);
+		}
+		
 		this._tableProduit = (TableLayout)this.findViewById(R.id.table_produit);
 		this._autocomleteView =  (AutoCompleteTextView)this.findViewById(R.id.autocomplet_produit);
 		this._autocomleteView.setAdapter(new ArrayAdapter<OVProduit>(this,
@@ -201,61 +210,11 @@ public class MainActivity extends FragmentActivity {
 						e.printStackTrace();
 					}
 					*/
-					
-					// Creation row
-					final TableRow tableRow = new TableRow(MainActivity.this);      
-					tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-
-					//Creation Checkbox
-					final CheckBox checkbox = new CheckBox(MainActivity.this);
-					checkbox.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-					checkbox.setTag(clickedProduit);
-					checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-
-						@Override
-						public void onCheckedChanged(CompoundButton arg0,
-								boolean arg1) {
-							// TODO Auto-generated method stub
-							OVProduit savedProduit = (OVProduit) arg0.getTag();
-							OVListeProduit objToUpdate = new OVListeProduit(
-									arg1, false,
-									savedProduit.getId(), MainActivity.this._mySmartList.getId()
-									);
-							
-							ReqListeProduit requestObj = new ReqListeProduit();
-							requestObj.setOvListeProduit(objToUpdate);
-							/*if(requestObj.requestUpdateListeProduit()){
-								
-							}*/
-							
-						}
-						
-					});
-
-					// Creation textView
-					final TextView text = new TextView(MainActivity.this);
-					text.setTextSize(15);
-					text.setText(clickedProduit.getNomProduit());
-					text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-					// Creation  button
-					final Button btnGo = new Button(MainActivity.this);
-					btnGo.setText("GO");
-					btnGo.setTextSize(20);
-					btnGo.setTextColor(Color.WHITE);
-					btnGo.setBackgroundColor(Color.BLUE);
-					btnGo.setTag(clickedProduit);
-					TableRow.LayoutParams p =new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-					p.gravity = Gravity.RIGHT;
-					btnGo.setLayoutParams(p);
-
-
-					//btnActiver.setOnClickListener(handler_btnActiver);
-					tableRow.addView(checkbox);
-					tableRow.addView(text);
-					tableRow.addView(btnGo);
-
-					MainActivity.this._tableProduit.addView(tableRow);
+					OVListeProduit clickedProdListe = new OVListeProduit(
+							false, false,
+							clickedProduit.getId(), MainActivity.this._mySmartList.getId()
+							);
+					MainActivity.this.AddProduitRowLineView(clickedProdListe);
 					MainActivity.this._autocomleteView.setText("");
 				}
 
@@ -346,4 +305,77 @@ public class MainActivity extends FragmentActivity {
 	}
 
 
+	public OVProduit getProduitById(int id){
+		for(OVProduit prd : this._allProduits){
+			if(prd.getId() == id){
+				return prd;
+			}
+		}
+		return null;
+	}
+	
+	public boolean AddProduitRowLineView(OVListeProduit prodToShow){
+
+		OVProduit clickedProduit = this.getProduitById(prodToShow.getIdProduit());
+		if(clickedProduit != null){
+
+			// Creation row
+			final TableRow tableRow = new TableRow(MainActivity.this);      
+			tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+
+			//Creation Checkbox
+			final CheckBox checkbox = new CheckBox(MainActivity.this);
+			checkbox.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+			checkbox.setTag(clickedProduit);
+			checkbox.setChecked(prodToShow.getCoche());
+			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+				@Override
+				public void onCheckedChanged(CompoundButton arg0,
+						boolean arg1) {
+					// TODO Auto-generated method stub
+					OVProduit savedProduit = (OVProduit) arg0.getTag();
+					OVListeProduit objToUpdate = new OVListeProduit(
+							arg1, false,
+							savedProduit.getId(), MainActivity.this._mySmartList.getId()
+							);
+					
+					ReqListeProduit requestObj = new ReqListeProduit();
+					requestObj.setOvListeProduit(objToUpdate);
+					/*if(requestObj.requestUpdateListeProduit()){
+						
+					}*/
+					
+				}
+				
+			});
+
+			// Creation textView
+			final TextView text = new TextView(MainActivity.this);
+			text.setTextSize(15);
+			text.setText(clickedProduit.getNomProduit());
+			text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+			// Creation  button
+			final Button btnGo = new Button(MainActivity.this);
+			btnGo.setText("GO");
+			btnGo.setTextSize(20);
+			btnGo.setTextColor(Color.WHITE);
+			btnGo.setBackgroundColor(Color.BLUE);
+			btnGo.setTag(clickedProduit);
+			TableRow.LayoutParams p =new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+			p.gravity = Gravity.RIGHT;
+			btnGo.setLayoutParams(p);
+
+
+			//btnActiver.setOnClickListener(handler_btnActiver);
+			tableRow.addView(checkbox);
+			tableRow.addView(text);
+			tableRow.addView(btnGo);
+
+			MainActivity.this._tableProduit.addView(tableRow);
+			return true;
+		}
+		return false;
+	}
 }

@@ -222,7 +222,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		}
 	}
 
-	public void ScrollPlan(int y) {
+	public void ScrollPlanY(int y) {
 		int dy = y;
 		int oldY = this.planOffset.y;
 		this.planOffset.y += y;
@@ -239,6 +239,10 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		if (this.targetDrawer != null) {
 			this.targetDrawer.Move(0, dy);
 		}
+	}
+	
+	public void ScrollPlanX(int x){
+		
 	}
 
 	public void moveTargetBoxToRelativeScreen(int relativeX, int relativeY) {

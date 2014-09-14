@@ -41,7 +41,7 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 			int dy = (int) (event.getY() - this.lastY);
 			this.margin_counter += Math.abs(dy);
 			if (this.margin_counter > CLICK_MARGIN) {
-				this.view.ScrollPlan(dy * 2);
+				this.view.ScrollPlanY(dy * 2);
 
 				this.lastX = event.getX();
 				this.lastY = event.getY();
