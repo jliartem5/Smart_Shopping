@@ -8,7 +8,12 @@ import org.json.JSONException;
 import com.example.sshopping.R;
 
 import SmartShopping.OV.OVCategorie;
+import SmartShopping.OV.OVListeProduit;
 import SmartShopping.OV.OVProduit;
+import SmartShopping.OV.OVSmartList;
+import SmartShopping.OV.ReqListeProduit;
+import SmartShopping.OV.ReqProduit;
+import SmartShopping.OV.ReqSmartList;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -54,7 +59,9 @@ public class MainActivity extends FragmentActivity {
 
 	private List<OVCategorie> _allCategorie = new ArrayList<OVCategorie>();
 	private List<OVProduit> _allProduits = new ArrayList<OVProduit>();
-
+	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
+	private OVSmartList _mySmartList = new OVSmartList(_myListeProduit, "test-smartListe");
+	
 	private FragmentManager	_fm;
 	private DrawerLayout	_drawerLayout;
 	private AutoCompleteTextView _autocomleteView;
@@ -85,28 +92,69 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void onClick(View arg0) {
-
 				List<View> listViewToDelete = new ArrayList<View>();
+				
+				List<OVListeProduit> listeCompletToUpdate = new ArrayList<OVListeProduit>();
 
 				for(int i = 0, j = MainActivity.this._tableProduit.getChildCount(); i < j; i++){
 					// then, you can remove the the row you want...
 					// for instance...
 					TableRow row = (TableRow) MainActivity.this._tableProduit.getChildAt(i);
 
-					if(((CheckBox)row.getChildAt(0)).isChecked()) {
+					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
+					OVProduit checkTagProduit = (OVProduit) row.getChildAt(0).getTag();
+					OVListeProduit oneListeProduit = new OVListeProduit(
+							isCheckboxChecked, isCheckboxChecked,
+							checkTagProduit.getId(), MainActivity.this._mySmartList.getId());
+					listeCompletToUpdate.add(oneListeProduit);
+					
+					if(isCheckboxChecked) {
 						listViewToDelete.add(MainActivity.this._tableProduit.getChildAt(i));
 					}
 				}
-				for(View v : listViewToDelete){
-					MainActivity.this._tableProduit.removeView(v);
+				
+				ReqSmartList updateRequest = new ReqSmartList();
+				OVSmartList smartListToUpdate = new OVSmartList(listeCompletToUpdate, MainActivity.this._mySmartList.getNom());
+				updateRequest.setSmartList(smartListToUpdate);
+				
+				try {
+					boolean isUpdateOK = updateRequest.requestUpdateSmartList();
+					if(isUpdateOK){
+						for(View v : listViewToDelete){
+							MainActivity.this._tableProduit.removeView(v);
+						}
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
 			}
 
 		});
 
+		/*
+		ReqProduit reqProduit = new ReqProduit();
+		try {
+			this._allProduits = reqProduit.requestTousLesProduits().getListeProduit();
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+
+	/*	ReqSmartList reqSmartList = new ReqSmartList();
+		 try {
+			this._mySmartList = reqSmartList.requestGetSmartList().getSmartList();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		this._mySmartList.setId(1);// pour les tests, à effacer
+		
 		this._allCategorie.add(new OVCategorie(0, "Lait"));	
 		this._allCategorie.add(new OVCategorie(1, "Fruit"));	
-		
 		this._allProduits.add(new OVProduit(0,"Dadone", this._allCategorie.get(0), 10));
 		this._allProduits.add(new OVProduit(1,"Lait naturel", this._allCategorie.get(0), 10));
 		this._allProduits.add(new OVProduit(2,"Lait pourrie", this._allCategorie.get(0), 10));
@@ -133,6 +181,27 @@ public class MainActivity extends FragmentActivity {
 
 				OVProduit clickedProduit = (OVProduit) parent.getItemAtPosition(position);
 				if(clickedProduit != null){
+					/*
+					OVListeProduit produitToAdd = new OVListeProduit(
+							false, false, clickedProduit.getId(), MainActivity.this._mySmartList.getId()
+							);
+
+					ReqListeProduit reqAddProduit = new ReqListeProduit();
+					reqAddProduit.setOvListeProduit(produitToAdd);
+					 
+					try {
+						boolean addResult = reqAddProduit.requestAddListeProduit();
+
+						if(addResult == false){
+							//Alert?
+							return ;
+						}
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					*/
+					
 					// Creation row
 					final TableRow tableRow = new TableRow(MainActivity.this);      
 					tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
@@ -147,6 +216,17 @@ public class MainActivity extends FragmentActivity {
 						public void onCheckedChanged(CompoundButton arg0,
 								boolean arg1) {
 							// TODO Auto-generated method stub
+							OVProduit savedProduit = (OVProduit) arg0.getTag();
+							OVListeProduit objToUpdate = new OVListeProduit(
+									arg1, false,
+									savedProduit.getId(), MainActivity.this._mySmartList.getId()
+									);
+							
+							ReqListeProduit requestObj = new ReqListeProduit();
+							requestObj.setOvListeProduit(objToUpdate);
+							/*if(requestObj.requestUpdateListeProduit()){
+								
+							}*/
 							
 						}
 						

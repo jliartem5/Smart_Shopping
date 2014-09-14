@@ -19,6 +19,13 @@ public class ReqSmartList extends OVReq{
 		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.GetSmartList, this);
 		return new RepSmartList(JSONrep.toString());
 	}
+	
+	public boolean requestUpdateSmartList() throws JSONException{
+
+		WebServer ws = WebServer.getInstance();		
+		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.UpdateSmartList, this);
+		return true;
+	}
 
 	public OVSmartList getSmartList() {
 		return smartList;

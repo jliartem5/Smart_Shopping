@@ -7,7 +7,7 @@ public class OVListeProduit extends OVObject {
 	private Boolean coche;
 	private Boolean supprime;
 	private Integer idProduit;
-	private Integer idListe;
+	private Integer idListe;//idSmartList
 	
 	public Boolean getCoche() {
 		return coche;

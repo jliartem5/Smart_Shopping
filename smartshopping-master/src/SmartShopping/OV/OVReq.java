@@ -6,12 +6,20 @@
 
 package SmartShopping.OV;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+
 /**
  *
  * @author TheNabo1
  */
-public class OVReq extends OVObject{
-    
-    
-    
+public class OVReq {
+
+	public JSONObject toJSON() throws JSONException{
+		String jsonSTR  = new Gson().toJson(this);
+		JSONObject json = new JSONObject(jsonSTR);
+		return json;
+	}
 }
