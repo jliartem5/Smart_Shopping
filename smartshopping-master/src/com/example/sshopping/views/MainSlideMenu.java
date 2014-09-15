@@ -34,7 +34,7 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 		this.findViewById(R.id.slide_menu_plan).setOnClickListener(this);
 		this.findViewById(R.id.slide_menu_coupons).setOnClickListener(this);
 		this.findViewById(R.id.slide_menu_parametre).setOnClickListener(this);
-		this.findViewById(R.id.slide_menu_quit).setOnClickListener(this);
+		//this.findViewById(R.id.slide_menu_quit).setOnClickListener(this);
 		
 	}
 
@@ -51,9 +51,9 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 				break;	
 			case R.id.slide_menu_parametre:
 				break;
-			case R.id.slide_menu_quit:
-				System.exit(0);
-				break;
+			//case R.id.slide_menu_quit:
+			//	System.exit(0);
+			//	break;
 		}
 		this._mainActivity.closeSlideMenu();
 	}

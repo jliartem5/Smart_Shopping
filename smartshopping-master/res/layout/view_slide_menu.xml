@@ -4,39 +4,97 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_menu" >
-
-    <Button
+                   	
+  	<LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
         android:id="@+id/slide_menu_smartlist"
-        android:background="@drawable/list_selector"
-        android:text="Ma Smart List"/>
-   	<Button
+        android:background="@drawable/list_selector" >
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="30dp"
+            android:background="@drawable/panier" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#1919A3"
+            android:textStyle="bold" 
+            android:text="Ma Smart List" />
+    </LinearLayout>
+    
+  	<LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
         android:id="@+id/slide_menu_plan"
-        android:background="@drawable/list_selector"
-        android:text="Plan"/>
-        
-  	<Button
+        android:background="@drawable/list_selector" >
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="30dp"
+            android:background="@drawable/map" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#1919A3"
+            android:textStyle="bold" 
+            android:text="Plan" />
+    </LinearLayout>
+    
+ 	<LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
         android:id="@+id/slide_menu_coupons"
-        android:background="@drawable/list_selector"
-        android:text="Mes coupons"/>
-        
-   	<Button
+        android:background="@drawable/list_selector" >
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="30dp"
+            android:background="@drawable/coupon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#1919A3"
+            android:textStyle="bold" 
+            android:text="Mes coupons" />
+    </LinearLayout>
+    
+ 	<LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
         android:id="@+id/slide_menu_parametre"
-        android:background="@drawable/list_selector"
-        android:text="Parametres"/>
-        
-   	<Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/slide_menu_quit"
-        android:background="@drawable/list_selector"
-        android:text="Quitter"/>
+        android:background="@drawable/list_selector" >
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="30dp"
+            android:background="@drawable/param" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#1919A3"
+            android:textStyle="bold" 
+            android:text="Parametres" />
+    </LinearLayout>
 
 </LinearLayout>

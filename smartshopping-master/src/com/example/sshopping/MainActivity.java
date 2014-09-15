@@ -227,7 +227,7 @@ public class MainActivity extends FragmentActivity {
 		this.actionBar.setDisplayShowCustomEnabled(true);
 
 		this._fm = getSupportFragmentManager();
-		//this.switchFragment(new EmptyFragment());
+		this.switchFragment(new EmptyFragment());
 	}
 
 
