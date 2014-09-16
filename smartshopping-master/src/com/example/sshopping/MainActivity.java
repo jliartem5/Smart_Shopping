@@ -353,7 +353,7 @@ public class MainActivity extends FragmentActivity {
 			// Creation textView
 			final TextView text = new TextView(MainActivity.this);
 			text.setTextSize(15);
-			text.setText(clickedProduit.getNomProduit());
+			text.setText(clickedProduit.getNomProduit() + "    " + clickedProduit.getPrix() + "€");
 			text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
 			// Creation  button
