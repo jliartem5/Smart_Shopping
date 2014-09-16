@@ -23,7 +23,7 @@ public class OVCategorie extends OVObject{
             object = new JSONObject(jsonObject);
             this.id = Integer.parseInt(object.get("id").toString());
             this.nomCategorie = object.get("nomCategorie").toString();  
-        } 
+        }
         catch (JSONException ex)
         {
         }

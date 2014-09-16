@@ -21,9 +21,7 @@ public class RepProduit extends OVRep {
 
     
     public RepProduit(String jsonString) throws JSONException {
-        
-        JSONObject repProduitJson = new JSONObject(jsonString).getJSONObject("repProduit");
-        JSONArray arrayProduit = repProduitJson.getJSONArray("listeProduit");
+        JSONArray arrayProduit = new JSONObject(jsonString).getJSONArray("listeProduit");
         
         this.listeProduit = new ArrayList<OVProduit>();
         

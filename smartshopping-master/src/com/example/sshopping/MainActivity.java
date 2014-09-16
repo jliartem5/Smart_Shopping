@@ -133,16 +133,17 @@ public class MainActivity extends FragmentActivity {
 
 		});
 
-		/*
+		
 		ReqProduit reqProduit = new ReqProduit();
 		try {
 			this._allProduits = reqProduit.requestTousLesProduits().getListeProduit();
+			
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 
 	/*	ReqSmartList reqSmartList = new ReqSmartList();
 		 try {

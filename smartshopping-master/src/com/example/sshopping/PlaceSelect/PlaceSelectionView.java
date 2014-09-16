@@ -1,7 +1,5 @@
 package com.example.sshopping.PlaceSelect;
 
-import java.util.List;
-
 import com.example.sshopping.R;
 import com.example.sshopping.SelectPlaceActivity;
 
@@ -13,13 +11,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -242,7 +235,27 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 	}
 	
 	public void ScrollPlanX(int x){
+		int dx = x;
+		int oldX = this.planOffset.x;
+		this.planOffset.x += x;
 		
+		if(x + this.planOffset.x > 0){
+			dx = -oldX;
+			this.planOffset.x = 0;
+		}
+		if(Math.abs(this.planOffset.y) + this.screenSize.y >= this.plan.getWidth()){
+			this.planOffset.x = -(this.plan.getWidth() - this.screenSize.x);
+			dx = this.planOffset.x - oldX;
+		}
+		
+		if(this.targetDrawer != null){
+			this.targetDrawer.Move(dx, 0);
+		}
+	}
+	
+	public void ScrollPlan(int x, int y){
+		this.ScrollPlanX(x);
+		this.ScrollPlanY(y);
 	}
 
 	public void moveTargetBoxToRelativeScreen(int relativeX, int relativeY) {

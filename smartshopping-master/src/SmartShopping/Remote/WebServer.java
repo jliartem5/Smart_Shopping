@@ -26,7 +26,7 @@ public class WebServer {
 	// Design Pattern Singleton
 	protected static WebServer _instance = null;
 	
-	private final String webBaseUrl = "http://www.SmartShopping.com/";
+	private final String webBaseUrl = "http://smartshopping.no-ip.org:8080/smartshopping/";
 	
 	private WebServer(){
 		// constructer privé
@@ -40,7 +40,7 @@ public class WebServer {
 	};
 	
 	public JSONObject sendRequest(COMMANDE cmd, OVReq request) throws JSONException{
-		String finalURL = this.webBaseUrl + cmd.toString();
+		String finalURL = this.webBaseUrl + cmd.toString()+".jsp";
 		JSONObject JSONrep = HttpClients.SendHttpPost(finalURL, request.toJSON());
 		
 		return JSONrep;

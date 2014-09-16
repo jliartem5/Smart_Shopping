@@ -9,6 +9,7 @@ package SmartShopping.OV;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
 import SmartShopping.Remote.WebServer;
 
 /**

@@ -25,6 +25,7 @@ public class HttpClients {
 
 	public static JSONObject SendHttpPost(String URL, JSONObject jsonObjSend) {
 
+		Log.i(TAG, "Http url:"+URL);
 		JSONObject errorJSONobj = new JSONObject();
 		String errorMessage = "";
 		try {
@@ -41,6 +42,7 @@ public class HttpClients {
 
 			long t = System.currentTimeMillis();
 			HttpResponse response = (HttpResponse) httpclient.execute(httpPostRequest);
+			
 			Log.i(TAG, "HTTPResponse received in [" + (System.currentTimeMillis()-t) + "ms]");
 
 			HttpEntity entity = response.getEntity();
@@ -53,7 +55,7 @@ public class HttpClients {
 				}
 
 				String resultString= convertStreamToString(instream);
-				//Log.i(TAG,"<JSONObject>\n"+resultString+"\n</JSONObject>");
+				Log.i(TAG,"<JSONObject>\n"+resultString+"\n</JSONObject>");
 				instream.close();
 				resultString = resultString.substring(0,resultString.length()-1); 
 				JSONObject jsonObjRecv = new JSONObject(resultString);
@@ -63,12 +65,14 @@ public class HttpClients {
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			errorMessage = e.getMessage();
+
+			errorMessage = e.getMessage() == null ?"No error msg":e.getMessage();
 		}
 		
 		try {
 			errorJSONobj.putOpt("error", errorMessage);
+
+			Log.i(TAG, errorMessage);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
