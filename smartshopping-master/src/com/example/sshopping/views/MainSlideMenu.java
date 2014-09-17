@@ -3,7 +3,7 @@ package com.example.sshopping.views;
 import com.example.sshopping.MainActivity;
 import com.example.sshopping.R;
 import com.example.sshopping.REQUEST_CODE;
-import com.example.sshopping.SelectPlaceActivity;
+import com.example.sshopping.SmartPlanActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +46,8 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 				//this._mainActivity.switchFragment(new FragmentConnexion());
 				break;
 			case R.id.slide_menu_plan:
+				Intent switchActivityIntent = new Intent(this.getContext(), SmartPlanActivity.class);
+				this._mainActivity.startActivityForResult(switchActivityIntent, 0);
 				break;	
 			case R.id.slide_menu_coupons:
 				break;	

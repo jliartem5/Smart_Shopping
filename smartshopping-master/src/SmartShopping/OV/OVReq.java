@@ -6,6 +6,11 @@
 
 package SmartShopping.OV;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,4 +27,20 @@ public class OVReq {
 		JSONObject json = new JSONObject(jsonSTR);
 		return json;
 	}
+	/*
+	public List<NameValuePair> getNameValuePairList(){
+		List<NameValuePair> nvpList = new ArrayList<NameValuePair>();
+		try {
+			JSONObject thisJsonObj = this.toJSON();
+			Iterator<String> jsonKeys = thisJsonObj.keys();
+			while(jsonKeys.hasNext()){
+				nvpList.
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nvpList;
+		
+	}*/
 }

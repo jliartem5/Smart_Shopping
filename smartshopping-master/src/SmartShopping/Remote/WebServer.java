@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.sshopping.http.AsynJsonHttp;
 import com.example.sshopping.http.HttpClients;
+import com.example.sshopping.http.OnDataReturnListener;
 
 import SmartShopping.OV.OVRep;
 import SmartShopping.OV.OVReq;
@@ -19,7 +22,7 @@ public class WebServer {
 	public enum COMMANDE {
 		TousLesProduits, AjouterProduit,
 		GetSmartList, UpdateListeProduit,
-		AddListeProduit,
+		AddListeProduit,postParam,
 		UpdateSmartList
 	};
 	
@@ -39,10 +42,12 @@ public class WebServer {
 		return WebServer._instance;
 	};
 	
-	public JSONObject sendRequest(COMMANDE cmd, OVReq request) throws JSONException{
+	@SuppressWarnings("unchecked")
+	public void sendRequest(COMMANDE cmd, List<NameValuePair> request, OnDataReturnListener dataListener){
 		String finalURL = this.webBaseUrl + cmd.toString()+".jsp";
-		JSONObject JSONrep = HttpClients.SendHttpPost(finalURL, request.toJSON());
-		
-		return JSONrep;
+		AsynJsonHttp asynHttp = new AsynJsonHttp(finalURL, null);
+		asynHttp.setOnReturnDataListener(dataListener);
+		asynHttp.execute(request);
 	}
+	
 }

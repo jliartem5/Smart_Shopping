@@ -19,7 +19,7 @@ import android.widget.FrameLayout;
  * Classe qui permet de gerer le systeme de positionnement du PMR.
  * @author Shinthujan, Jian, Walid, Wally, Youssef
  */
-public class SelectPlaceActivity extends Activity {
+public class SmartPlanActivity extends Activity {
 	
 	PlaceSelectPopupWindow popupWindow;
 	PlaceSelectionView view;
@@ -31,7 +31,7 @@ public class SelectPlaceActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_select_place);
-		FrameLayout layout = (FrameLayout) SelectPlaceActivity.this.findViewById(R.id.place_selection_layout);
+		FrameLayout layout = (FrameLayout) SmartPlanActivity.this.findViewById(R.id.place_selection_layout);
 		view = (PlaceSelectionView) layout.getChildAt(0);
 	}
 	
@@ -39,7 +39,7 @@ public class SelectPlaceActivity extends Activity {
 	@Override
 	protected void onStart(){
 		super.onStart();
-		this.requestCode = getIntent().getExtras().getInt("request_code");
+		/*this.requestCode = getIntent().getExtras().getInt("request_code");
 		Log.i("LG", "SelectionPlaceActivity request code:"+requestCode);
 		if(getIntent().getExtras().containsKey("readOnly")){
 			this.isReadOnly = getIntent().getExtras().getBoolean("readOnly");
@@ -50,7 +50,7 @@ public class SelectPlaceActivity extends Activity {
 			int y = getIntent().getExtras().getInt("y");
 			Log.i("LG", "Received old point: "+x+";"+y);
 			view.setTargetBoxBeginPosition(x, y);
-		}
+		}*/
 	}
 
 	public void ShowPopupWindow(){
@@ -60,7 +60,7 @@ public class SelectPlaceActivity extends Activity {
 		}
 		
 		//this.menuWindow.showAtLocation(this.findViewById(R.id.place_selection_layout), Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 100, 100);
-		popupWindow = new PlaceSelectPopupWindow(SelectPlaceActivity.this);
+		popupWindow = new PlaceSelectPopupWindow(SmartPlanActivity.this);
 		popupWindow.setWidth((int) (getWindowManager().getDefaultDisplay().getWidth() / 1.5));
 		popupWindow.setHeight(250);
 		popupWindow.showAtLocation(findViewById(R.id.place_selection_layout), Gravity.CENTER
@@ -83,8 +83,8 @@ public class SelectPlaceActivity extends Activity {
 				returnIntent.putExtra("x", convertedTargetPoint.x);
 				returnIntent.putExtra("y", convertedTargetPoint.y);
 				
-				SelectPlaceActivity.this.setResult(RESULT_OK, returnIntent);
-				SelectPlaceActivity.this.finish();
+				SmartPlanActivity.this.setResult(RESULT_OK, returnIntent);
+				SmartPlanActivity.this.finish();
 			}
 		});
 	}

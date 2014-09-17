@@ -1,5 +1,10 @@
 package com.example.sshopping.http;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
@@ -11,7 +16,7 @@ import android.os.AsyncTask;
  * la connection a un serveur.
  * @author Shinthujan, Jian, Walid, Wally, Youssef
  */
-public class AsynJsonHttp extends AsyncTask<JSONObject, Integer, JSONObject>{
+public class AsynJsonHttp extends AsyncTask<List<NameValuePair>, Integer, JSONObject>{
 	
 	private String url;
 	private ProgressDialog progressDialog;
@@ -20,17 +25,19 @@ public class AsynJsonHttp extends AsyncTask<JSONObject, Integer, JSONObject>{
 	public AsynJsonHttp(String URL, Context context){
 		this.url = URL;
 		this.context = context;
-		this.progressDialog = new ProgressDialog(context);
+		if(context != null){
+			this.progressDialog = new ProgressDialog(context);
+		}
 	}
 	
 	@Override
-	protected JSONObject doInBackground(JSONObject... params) {
+	protected JSONObject doInBackground(List<NameValuePair>... params) {
 		JSONObject jsonRec = HttpClients.SendHttpPost(url, params[0]);
 
 		return jsonRec;
 	}
 	
-	public void setDataListener(OnDataReturnListener listener){
+	public void setOnReturnDataListener(OnDataReturnListener listener){
 		this._onDataListener = listener;
 		
 	}
@@ -41,7 +48,9 @@ public class AsynJsonHttp extends AsyncTask<JSONObject, Integer, JSONObject>{
 	
 	@Override
 	protected void onPostExecute(JSONObject result) {
-    	this.progressDialog.dismiss();
+		if(this.progressDialog != null){
+			this.progressDialog.dismiss();
+		}
     	if(this._onDataListener != null){
     		this._onDataListener.OnDataReturn(result);
     	}
@@ -49,7 +58,9 @@ public class AsynJsonHttp extends AsyncTask<JSONObject, Integer, JSONObject>{
 	
     @Override
     protected void onPreExecute(){
-    	this.progressDialog = ProgressDialog.show(context, "", "Chargement...", true, false);
+    	if(this.progressDialog != null){
+    		this.progressDialog = ProgressDialog.show(context, "", "Chargement...", true, false);
+    	}
     	super.onPreExecute();
     }
 }

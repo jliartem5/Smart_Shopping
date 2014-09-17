@@ -47,12 +47,13 @@ public class OVListeProduit extends OVObject {
         {
             JSONObject object;
             object = new JSONObject(jsonStr);
-            this.id = Integer.parseInt(object.get("id").toString());
+            
             this.setCoche(object.getBoolean("coche"));
             this.setIdListe(object.getInt("idListe"));
             this.setIdProduit(object.getInt("idProduit"));
             this.setSupprime(object.getBoolean("supprime"));
-        } 
+            this.id = object.getInt("id");
+        }
         catch (JSONException ex) 
         {
         }

@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.sshopping.SelectPlaceActivity"
+            android:name="com.example.sshopping.SmartPlanActivity"
             android:screenOrientation="portrait"
             android:label="Train" >
         </activity>

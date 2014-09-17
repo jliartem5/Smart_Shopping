@@ -37,16 +37,14 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 			
 			break;
 		case MotionEvent.ACTION_MOVE:
-			float dx = event.getX() - this.lastX;
+			int dx = (int)(event.getX() - this.lastX);
 			int dy = (int) (event.getY() - this.lastY);
-			this.margin_counter += Math.abs(dy);
+			this.margin_counter += Math.abs(dy+dx);
 			if (this.margin_counter > CLICK_MARGIN) {
-				this.view.ScrollPlanY(dy * 2);
+				this.view.ScrollPlan(dx*2, dy * 2);
 
 				this.lastX = event.getX();
 				this.lastY = event.getY();
-				Log.i("PlaceSelectToucheListener", "ActionMove pixel:"
-						+ margin_counter);
 			}
 
 			break;

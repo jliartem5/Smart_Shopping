@@ -6,8 +6,13 @@
 
 package SmartShopping.OV;
 
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.example.sshopping.http.OnDataReturnListener;
 
 import android.util.Log;
 import SmartShopping.Remote.WebServer;
@@ -28,16 +33,15 @@ public class ReqProduit extends OVReq {
         this.ovProduit = ovProduit;
     }
     
-	public RepProduit requestTousLesProduits() throws JSONException{
+	public void requestTousLesProduits(OnDataReturnListener dataListener){
 		WebServer ws = WebServer.getInstance();		
-		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.TousLesProduits, this);
-		return new RepProduit(JSONrep.toString());
+		ws.sendRequest(WebServer.COMMANDE.TousLesProduits, new ArrayList<NameValuePair>(), dataListener);
 	}
 	
-	public boolean requestAjoutProduit() throws JSONException{
+	public boolean requestAjoutProduit(OnDataReturnListener dataListener){
 		WebServer ws = WebServer.getInstance();		
 		// this contient le produit à ajouter
-		JSONObject JSONrep = ws.sendRequest(WebServer.COMMANDE.AjouterProduit, this); 
+		ws.sendRequest(WebServer.COMMANDE.AjouterProduit, new ArrayList<NameValuePair>(), dataListener); 
 		return true;
 	}
     

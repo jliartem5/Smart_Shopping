@@ -1,7 +1,7 @@
 package com.example.sshopping.PlaceSelect;
 
 import com.example.sshopping.R;
-import com.example.sshopping.SelectPlaceActivity;
+import com.example.sshopping.SmartPlanActivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,7 +32,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 							// repositionner les places
 	
 	private Point screenSize;
-	private SelectPlaceActivity context;
+	private SmartPlanActivity context;
 	
 	private boolean isReadOnly = false;
 
@@ -42,7 +42,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 
 	public PlaceSelectionView(Context context, AttributeSet attrs) {
 		super(context);
-		this.context = (SelectPlaceActivity) context;
+		this.context = (SmartPlanActivity) context;
 		this.holder = this.getHolder();
 		this.holder.addCallback(this);
 
@@ -115,6 +115,10 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		int finalPlanWidth = (int) (this.screenSize.x * 0.8);
 
 		planScale = finalPlanWidth / this.plan.getWidth();
+		
+		planScale=1;//à Supprimer pour Prod
+		
+		
 		Matrix matrix = new Matrix();
 		matrix.postScale(planScale, planScale);
 		this.plan = Bitmap.createBitmap(this.plan, 0, 0, this.plan.getWidth(),
@@ -195,7 +199,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 
 			canvas.drawBitmap(this.plan, this.planOffset.x, this.planOffset.y,
 					null);
-
+			
 			if (this.targetDrawer != null) {
 				this.targetDrawer.Draw(canvas);
 			}
@@ -204,13 +208,6 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 			paint.setAntiAlias(true);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(25);
-			String str = "Height:" + this.screenSize.y + "; Width:"
-					+ this.screenSize.x;
-
-			//Rect bound = new Rect();
-			//paint.getTextBounds(str, 0, str.length(), bound);
-			//canvas.drawText(str, 10, 10 + bound.height(), paint);
-
 			this.holder.unlockCanvasAndPost(canvas);
 		}
 	}
@@ -239,13 +236,16 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		int oldX = this.planOffset.x;
 		this.planOffset.x += x;
 		
+		//TODO: DEBUG
 		if(x + this.planOffset.x > 0){
 			dx = -oldX;
 			this.planOffset.x = 0;
+			Log.d("HttpClient", "111:"+dx);
 		}
-		if(Math.abs(this.planOffset.y) + this.screenSize.y >= this.plan.getWidth()){
+		if(Math.abs(this.planOffset.x) + this.screenSize.x >= this.plan.getWidth()){
 			this.planOffset.x = -(this.plan.getWidth() - this.screenSize.x);
 			dx = this.planOffset.x - oldX;
+			Log.d("HttpClient", "222:"+dx);
 		}
 		
 		if(this.targetDrawer != null){

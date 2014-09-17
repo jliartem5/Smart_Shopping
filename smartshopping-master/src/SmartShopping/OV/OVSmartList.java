@@ -1,10 +1,13 @@
 package SmartShopping.OV;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 public class OVSmartList extends OVObject{
 	
@@ -14,12 +17,18 @@ public class OVSmartList extends OVObject{
 	public OVSmartList(String jsonStr){
         try 
         {
-            JSONObject object;
-            object = new JSONObject(jsonStr);
-            this.id = Integer.parseInt(object.get("id").toString());
+            JSONObject object = new JSONObject(jsonStr);
+            if(object.has("smartList")){
+            	object = new JSONObject(jsonStr).getJSONObject("smartList");
+            }
+            if(object.has("id")){
+            	this.id = object.getInt("id");
+            }else{
+            	this.id = 1;
+            }
             this.setNom(object.getString("nom"));
-            JSONArray smartListArr = object.getJSONArray("produitSmartList");
-            
+            JSONArray smartListArr = object.getJSONArray("produitsSmartList");
+            this.produitsSmartList = new ArrayList<OVListeProduit>();
             for(int i=0; i<smartListArr.length();++i){
             	OVListeProduit newlistProduit = new OVListeProduit(smartListArr.get(i).toString());
             	produitsSmartList.add(newlistProduit);
@@ -27,6 +36,7 @@ public class OVSmartList extends OVObject{
         }
         catch (JSONException ex) 
         {
+        	Log.i("HttpClient", ex.getMessage());
         }	
 	}
 	
@@ -42,10 +52,11 @@ public class OVSmartList extends OVObject{
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	public OVSmartList(List<OVListeProduit> produitsSmartList, String nom) {
+	public OVSmartList(List<OVListeProduit> produitsSmartList, String nom, int id) {
 		super();
 		this.produitsSmartList = produitsSmartList;
 		this.nom = nom;
+		this.id = id;
 	}
 	
 }

@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.example.sshopping.R;
+import com.example.sshopping.http.OnDataReturnListener;
 
 import SmartShopping.OV.OVCategorie;
 import SmartShopping.OV.OVListeProduit;
 import SmartShopping.OV.OVProduit;
 import SmartShopping.OV.OVSmartList;
+import SmartShopping.OV.RepListeProduit;
+import SmartShopping.OV.RepProduit;
+import SmartShopping.OV.RepSmartList;
 import SmartShopping.OV.ReqListeProduit;
 import SmartShopping.OV.ReqProduit;
 import SmartShopping.OV.ReqSmartList;
@@ -60,7 +65,7 @@ public class MainActivity extends FragmentActivity {
 	private List<OVCategorie> _allCategorie = new ArrayList<OVCategorie>();
 	private List<OVProduit> _allProduits = new ArrayList<OVProduit>();
 	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
-	private OVSmartList _mySmartList = new OVSmartList(_myListeProduit, "test-smartListe");
+	private OVSmartList _mySmartList;
 	
 	private FragmentManager	_fm;
 	private DrawerLayout	_drawerLayout;
@@ -84,15 +89,25 @@ public class MainActivity extends FragmentActivity {
 		this.actionBar.setDisplayShowTitleEnabled(false);
 		this.actionBar.setDisplayHomeAsUpEnabled(false);
 		this.actionBar.setDisplayShowCustomEnabled(true);
+		MainActivity.this._autocomleteView =  (AutoCompleteTextView)MainActivity.this.findViewById(R.id.autocomplet_produit);
+		
 
 		this._fm = getSupportFragmentManager();
-
+		/*String str = "{\"id\":1,\"nom\":\"mySmartListe\",\"produitsSmartList\":[{\"id\":1,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":5},{\"id\":4,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":16},{\"id\":5,\"idListe\":1,\"coche\":true,\"supprime\":true,\"idProduit\":8},{\"id\":12,\"idListe\":1,\"coche\":true,\"supprime\":true,\"idProduit\":3},{\"id\":28,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":3}]}";
+		OVSmartList ovsl = new OVSmartList(str);
+		try {
+			Log.i("HttpClient", ovsl.toJSON().toString());
+		} catch (JSONException e1) {
+			Log.e("HttpCLient", e1.getMessage());
+			e1.printStackTrace();
+		}*/
+		
 		this._btnDelete = (Button)this.findViewById(R.id.btn_supprime_prod);
 		this._btnDelete.setOnClickListener(new OnClickListener(){
 
+			List<View> listViewToDelete = new ArrayList<View>();
 			@Override
 			public void onClick(View arg0) {
-				List<View> listViewToDelete = new ArrayList<View>();
 				
 				List<OVListeProduit> listeCompletToUpdate = new ArrayList<OVListeProduit>();
 
@@ -102,10 +117,9 @@ public class MainActivity extends FragmentActivity {
 					TableRow row = (TableRow) MainActivity.this._tableProduit.getChildAt(i);
 
 					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
-					OVProduit checkTagProduit = (OVProduit) row.getChildAt(0).getTag();
-					OVListeProduit oneListeProduit = new OVListeProduit(
-							isCheckboxChecked, isCheckboxChecked,
-							checkTagProduit.getId(), MainActivity.this._mySmartList.getId());
+					OVListeProduit oneListeProduit = (OVListeProduit) row.getChildAt(0).getTag();
+					oneListeProduit.setCoche(isCheckboxChecked);
+					oneListeProduit.setSupprime(isCheckboxChecked);
 					listeCompletToUpdate.add(oneListeProduit);
 					
 					if(isCheckboxChecked) {
@@ -114,20 +128,23 @@ public class MainActivity extends FragmentActivity {
 				}
 				
 				ReqSmartList updateRequest = new ReqSmartList();
-				OVSmartList smartListToUpdate = new OVSmartList(listeCompletToUpdate, MainActivity.this._mySmartList.getNom());
+				OVSmartList smartListToUpdate = new OVSmartList(listeCompletToUpdate, MainActivity.this._mySmartList.getNom(), MainActivity.this._mySmartList.getId());
+				smartListToUpdate.setId(MainActivity.this._mySmartList.getId());
+				
 				updateRequest.setSmartList(smartListToUpdate);
 				
-				try {
-					boolean isUpdateOK = updateRequest.requestUpdateSmartList();
-					if(isUpdateOK){
-						for(View v : listViewToDelete){
-							MainActivity.this._tableProduit.removeView(v);
-						}
+				updateRequest.requestUpdateSmartList(new OnDataReturnListener(){
+
+					@Override
+					public void OnDataReturn(JSONObject jobj) {
+						// TODO Auto-generated method stub
+
+							for(View v : listViewToDelete){
+								MainActivity.this._tableProduit.removeView(v);
+							}
 					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					
+				});
 				
 			}
 
@@ -135,88 +152,88 @@ public class MainActivity extends FragmentActivity {
 
 		
 		ReqProduit reqProduit = new ReqProduit();
-		try {
-			this._allProduits = reqProduit.requestTousLesProduits().getListeProduit();
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		reqProduit.requestTousLesProduits(new OnDataReturnListener(){
 
-	/*	ReqSmartList reqSmartList = new ReqSmartList();
-		 try {
-			this._mySmartList = reqSmartList.requestGetSmartList().getSmartList();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		this._mySmartList.setId(1);// pour les tests, à effacer
-		
-		this._allCategorie.add(new OVCategorie(0, "Lait"));	
-		this._allCategorie.add(new OVCategorie(1, "Fruit"));	
-		this._allProduits.add(new OVProduit(0,"Dadone", this._allCategorie.get(0), 10));
-		this._allProduits.add(new OVProduit(1,"Lait naturel", this._allCategorie.get(0), 10));
-		this._allProduits.add(new OVProduit(2,"Lait pourrie", this._allCategorie.get(0), 10));
-		this._allProduits.add(new OVProduit(3,"Lait noir", this._allCategorie.get(0), 10));
-		this._allProduits.add(new OVProduit(4,"Golden milk", this._allCategorie.get(0), 10));
-		this._allProduits.add(new OVProduit(5,"Pomme", this._allCategorie.get(1), 10));
-		this._allProduits.add(new OVProduit(6,"Golden appel", this._allCategorie.get(1), 10));
-		this._allProduits.add(new OVProduit(7,"Raizin", this._allCategorie.get(1), 10));
-		this._allProduits.add(new OVProduit(8,"Jian", this._allCategorie.get(1), 10));
-		this._allProduits.add(new OVProduit(9,"RER", this._allCategorie.get(1), 10));
-		this._allProduits.add(new OVProduit(10,"B-shock", this._allCategorie.get(1), 10));
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				try {
+					RepProduit repP = new RepProduit(jobj.toString());
+					MainActivity.this._allProduits = repP.getListeProduit();
 
-		for(OVListeProduit prodToShow : this._mySmartList.getProduitsSmartList()){
-			
-			if(prodToShow.getSupprime() == true){
-				continue;
+					MainActivity.this._autocomleteView.setAdapter(new ArrayAdapter<OVProduit>(MainActivity.this,
+							android.R.layout.simple_dropdown_item_1line, 
+							MainActivity.this._allProduits
+							));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			
-			this.AddProduitRowLineView(prodToShow);
-		}
+		});
+		
+
+		ReqSmartList reqSmartList = new ReqSmartList();
+				reqSmartList.requestGetSmartList(
+						new OnDataReturnListener(){
+							@Override
+							public void OnDataReturn(JSONObject jobj) {
+								MainActivity.this._mySmartList = new RepSmartList(jobj.toString()).getSmartList();
+								MainActivity.this._mySmartList.setId(1);
+
+								for(OVListeProduit prodToShow : MainActivity.this._mySmartList.getProduitsSmartList()){
+									
+									if(prodToShow.getSupprime() == true){
+										continue;
+									}
+									
+									MainActivity.this.AddProduitRowLineView(prodToShow);
+								}
+							}
+							
+						});
+		
+
 		
 		this._tableProduit = (TableLayout)this.findViewById(R.id.table_produit);
-		this._autocomleteView =  (AutoCompleteTextView)this.findViewById(R.id.autocomplet_produit);
-		this._autocomleteView.setAdapter(new ArrayAdapter<OVProduit>(this,
-				android.R.layout.simple_dropdown_item_1line, 
-				this._allProduits
-				));
 		this._autocomleteView.setOnItemClickListener(new OnItemClickListener(){
-
+			OVListeProduit produitToAdd;
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
 
 				OVProduit clickedProduit = (OVProduit) parent.getItemAtPosition(position);
 				if(clickedProduit != null){
-					/*
-					OVListeProduit produitToAdd = new OVListeProduit(
+					produitToAdd = new OVListeProduit(
 							false, false, clickedProduit.getId(), MainActivity.this._mySmartList.getId()
 							);
-
-					ReqListeProduit reqAddProduit = new ReqListeProduit();
-					reqAddProduit.setOvListeProduit(produitToAdd);
-					 
+					produitToAdd.setId(-1);//Mettre un id bidon au départ
+					
 					try {
-						boolean addResult = reqAddProduit.requestAddListeProduit();
-
-						if(addResult == false){
-							//Alert?
-							return ;
-						}
+						Log.i("HttpClient", produitToAdd.toJSON().toString());
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					*/
-					OVListeProduit clickedProdListe = new OVListeProduit(
-							false, false,
-							clickedProduit.getId(), MainActivity.this._mySmartList.getId()
-							);
-					MainActivity.this.AddProduitRowLineView(clickedProdListe);
-					MainActivity.this._autocomleteView.setText("");
+					ReqListeProduit reqAddProduit = new ReqListeProduit();
+					reqAddProduit.setOvListeProduit(produitToAdd);
+					 
+					reqAddProduit.requestAddListeProduit(new OnDataReturnListener(){
+
+						@Override
+						public void OnDataReturn(JSONObject jobj) {
+							 try {
+								int newLstProduitID = jobj.getInt("idListeProduit");
+								produitToAdd.setId(newLstProduitID);
+								MainActivity.this.AddProduitRowLineView(produitToAdd);
+								MainActivity.this._autocomleteView.setText("");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							 
+						}
+						 
+					 });
 				}
 
 			}
@@ -327,25 +344,30 @@ public class MainActivity extends FragmentActivity {
 			//Creation Checkbox
 			final CheckBox checkbox = new CheckBox(MainActivity.this);
 			checkbox.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-			checkbox.setTag(clickedProduit);
+			checkbox.setTag(prodToShow);
 			checkbox.setChecked(prodToShow.getCoche());
 			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 
 				@Override
 				public void onCheckedChanged(CompoundButton arg0,
-						boolean arg1) {
-					// TODO Auto-generated method stub
-					OVProduit savedProduit = (OVProduit) arg0.getTag();
-					OVListeProduit objToUpdate = new OVListeProduit(
-							arg1, false,
-							savedProduit.getId(), MainActivity.this._mySmartList.getId()
-							);
+						boolean arg1) 
+					{
 					
+					//On desactive la view jusau'au retour de serveur
+					checkbox.setEnabled(false);
+
+					OVListeProduit objToUpdate = (OVListeProduit) arg0.getTag();
+					objToUpdate.setCoche(arg1);
 					ReqListeProduit requestObj = new ReqListeProduit();
 					requestObj.setOvListeProduit(objToUpdate);
-					/*if(requestObj.requestUpdateListeProduit()){
+					requestObj.requestUpdateListeProduit(new OnDataReturnListener(){
+
+						@Override
+						public void OnDataReturn(JSONObject jobj) {
+							checkbox.setEnabled(true);//On réactive la view
+						}
 						
-					}*/
+					});
 					
 				}
 				
