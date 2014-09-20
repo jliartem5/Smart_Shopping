@@ -1,5 +1,10 @@
 package com.example.sshopping;
 
+import SmartShopping.ShortestPath.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.example.sshopping.R;
 import com.example.sshopping.PlaceSelect.PlaceSelectPopupWindow;
 import com.example.sshopping.PlaceSelect.PlaceSelectionView;
@@ -33,6 +38,61 @@ public class SmartPlanActivity extends Activity {
 		setContentView(R.layout.activity_select_place);
 		FrameLayout layout = (FrameLayout) SmartPlanActivity.this.findViewById(R.id.place_selection_layout);
 		view = (PlaceSelectionView) layout.getChildAt(0);
+		
+		
+		/***** EXEMPLE DE MAIN POUR UTILISER DIJSKTRA ET SMART MAP ***********/
+		/******************************************************************/
+		/******************************************************************/
+		
+		
+		SmartMap sm = new SmartMap();
+		
+		/******************************************************************/
+		//TODO : A IMPLEMENTER : quand on clic sur un bouton go, on récupère l'ID catégorie du produit
+		// A partir de cet ID? on parcours la liste des sommets de la SmartMap et si un sommet contient cet ID, on l'ajoute à la liste
+		// La liste en question (verticies): (donc ici, tous les sommets contenant par exemple l'ID numéro XXX)
+		// elle ne contiendra que les sommets dont l'idCategorie == idCategorie du produit recherché !
+		List<Vertex> vertices = new ArrayList<Vertex>(); // la liste des sommets pouvant contenir la catégorie recherché
+		// Cas à traiter : si il n'en existe pas ! 
+
+		// POUR L'EXEMPLE
+		vertices.add(sm.getV7());
+		vertices.add(sm.getV17());
+		vertices.add(sm.getV15());
+		vertices.add(sm.getV25());
+		vertices.add(sm.getV27());
+		
+		// Pour le Sprint 3
+		//List<String> speedShopping = new ArrayList<String>();
+		//Pour le SPritn 3 :  AUTRE boucle à faire sur le nombre de sommets à faire (nombre d'objet dans la liste de course)
+        
+		int min = 999; // grand chiffre par défaut
+		Vertex minVertex = new Vertex("min");
+		
+		// Calcul des minDistance à partir de v1 (sommet 1)
+		// Le sommet 1 représente le départ de l'utilisateur (en dur pour l'instant)
+		Dijkstra.computePaths(sm.getUserPosition());       
+		
+		// on vois quel sommet est le plus proche
+		for (Vertex v : vertices){
+			Log.v("#### TEST ####", "DANS LA BOUCLE : Le sommet  "+ v 
+					+ " est à une distance de : " + v.minDistance);
+			Log.v("#### TEST ####", "Le chemin pour y arriver : " + Dijkstra.getShortestPathTo(v));
+        	if(v.minDistance < min){
+        		min = (int) v.minDistance;
+        		minVertex = v;
+        	}
+        }
+		
+		// AFFICHAGE : le chemin le plus court jusqu'au vertex le plus proche
+		List<Vertex> path = Dijkstra.getShortestPathTo(minVertex);
+		Log.v("#### TEST ####", "AU FINAL : Le sommet le plus proche contenant la catégorie qui nous intéresse est "+ minVertex 
+							+ " et la distance est de : " + minVertex.minDistance);
+		Log.v("#### TEST ####", "Le chemin pour y arriver : " + path + "\n\n");
+		
+		/******************************************************************/
+		/******************************************************************/
+		/******************* FINEXEMPLE **********************************/
 	}
 	
 	
