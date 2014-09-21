@@ -3,6 +3,8 @@ package com.example.sshopping.PlaceSelect;
 import com.example.sshopping.R;
 import com.example.sshopping.SmartPlanActivity;
 
+import SmartShopping.ShortestPath.SmartMap;
+import SmartShopping.ShortestPath.Vertex;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,7 +19,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-public class PlaceSelectionView extends SurfaceView implements Callback,
+public class SmartPlanView extends SurfaceView implements Callback,
 		Runnable {
 
 	private Thread workThread;
@@ -27,6 +29,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 	private int FPS = 1000 / 30;
 
 	private Bitmap plan;
+	
 	private Point planOffset;
 	private float planScale;// nous servira pour redimentionner le plan et
 							// repositionner les places
@@ -36,18 +39,20 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 	
 	private boolean isReadOnly = false;
 
-	// Les objets necessaires pour dessiner la cible
-	PlaceTargetDrawer targetDrawer = null;
-	private Point targetDrawerBeginPlace = null;
+	private SmartMap sm;
+	private PathDrawer pathDrawer = null;
+	
 
-	public PlaceSelectionView(Context context, AttributeSet attrs) {
+	public SmartPlanView(Context context, AttributeSet attrs) {
 		super(context);
 		this.context = (SmartPlanActivity) context;
 		this.holder = this.getHolder();
 		this.holder.addCallback(this);
+		
+		this.sm = new SmartMap();
 
 		this.setKeepScreenOn(true);// On garde l'ecran allume
-		this.setOnTouchListener(new PlaceSelectTouchListener(this));
+		//this.setOnTouchListener(new PlaceSelectTouchListener(this));
 		this.setLongClickable(true);
 		
 		this.workThread = new Thread(this);
@@ -80,21 +85,6 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		return this.plan;
 	}
 	
-	public Point getTargetPoint(){
-		return this.targetDrawer.GetCenterPoint();
-	}
-	
-	public Point getConvertedTargetPoint(){
-		Point point =new Point( this.targetDrawer.GetCenterPoint().x, this.targetDrawer.GetCenterPoint().y);
-		
-		point.x += -this.planOffset.x;
-		point.y += -this.planOffset.y;
-		
-		point.x /= this.planScale;
-		point.y /= this.planScale;
-		
-		return point;
-	}
 	
 	public void ShowPopupWindow(){
 		this.context.ShowPopupWindow();
@@ -112,36 +102,25 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		// l'ecran
 		this.plan = BitmapFactory.decodeResource(getResources(),
 				R.drawable.plan);
-		int finalPlanWidth = (int) (this.screenSize.x * 0.8);
+		int finalPlanWidth = (int) (this.screenSize.x * 0.9);
 
-		planScale = finalPlanWidth / this.plan.getWidth();
-		
-		planScale=1;//à Supprimer pour Prod
+		planScale = ((float)finalPlanWidth / (float)this.plan.getWidth());
 		
 		
 		Matrix matrix = new Matrix();
 		matrix.postScale(planScale, planScale);
-		this.plan = Bitmap.createBitmap(this.plan, 0, 0, this.plan.getWidth(),
+		this.plan = Bitmap.createBitmap(this.plan, 0, 0, 
+				this.plan.getWidth(),
 				this.plan.getHeight(), matrix, true);
 
 		Point relativeCentralPoint = this.calculRelativeCentralPoint(this.plan.getWidth(), this.plan.getHeight());
 
-		this.planOffset = new Point(relativeCentralPoint.x, 0);
+		this.planOffset = relativeCentralPoint;
+
+		Vertex beginPosition = this.sm.getUserPosition();
+		Vertex targetPosition = this.sm.getVertexByPosition(24);
+		this.pathDrawer = new PathDrawer(this, this.sm, beginPosition, targetPosition);
 		
-		if(this.targetDrawerBeginPlace != null){
-			int transformedX = (int) (targetDrawerBeginPlace.x * this.planScale);
-			int transformedY = (int) (targetDrawerBeginPlace.y * this.planScale);
-			
-			//on trouve les positons par rapport a l'ecran
-			transformedX += this.planOffset.x;
-			transformedY += this.planOffset.y;
-			
-			if(this.targetDrawer == null){
-				this.targetDrawer = new PlaceTargetDrawer(this, transformedX, transformedY);
-			}else{
-				this.targetDrawer.MoveTo(transformedX, transformedY);
-			}
-		}
 		// Et a la fin on commence a dessiner le plan
 		try{
 			this.workThread.start();
@@ -200,14 +179,8 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 			canvas.drawBitmap(this.plan, this.planOffset.x, this.planOffset.y,
 					null);
 			
-			if (this.targetDrawer != null) {
-				this.targetDrawer.Draw(canvas);
-			}
+			this.pathDrawer.Draw(canvas);
 
-			Paint paint = new Paint();
-			paint.setAntiAlias(true);
-			paint.setColor(Color.WHITE);
-			paint.setTextSize(25);
 			this.holder.unlockCanvasAndPost(canvas);
 		}
 	}
@@ -226,9 +199,6 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 			dy =  this.planOffset.y - oldY;
 		}
 
-		if (this.targetDrawer != null) {
-			this.targetDrawer.Move(0, dy);
-		}
 	}
 	
 	public void ScrollPlanX(int x){
@@ -248,9 +218,6 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 			Log.d("HttpClient", "222:"+dx);
 		}
 		
-		if(this.targetDrawer != null){
-			this.targetDrawer.Move(dx, 0);
-		}
 	}
 	
 	public void ScrollPlan(int x, int y){
@@ -258,17 +225,7 @@ public class PlaceSelectionView extends SurfaceView implements Callback,
 		this.ScrollPlanY(y);
 	}
 
-	public void moveTargetBoxToRelativeScreen(int relativeX, int relativeY) {
-		if (this.targetDrawer == null) {
-			this.targetDrawer = new PlaceTargetDrawer(this, relativeX, relativeY);
-		} else {
-			this.targetDrawer.MoveTo(relativeX, relativeY);
-		}
-	}
 	
-	public void setTargetBoxBeginPosition(int rawXrelativeToMap, int rawYrelativeToMap){
-		this.targetDrawerBeginPlace = new Point(rawXrelativeToMap, rawYrelativeToMap);
-	}
 
 	private Point calculRelativeCentralPoint(int width, int height) {
 		Point point = new Point();

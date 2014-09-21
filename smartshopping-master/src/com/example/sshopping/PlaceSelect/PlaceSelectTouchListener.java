@@ -7,7 +7,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 public class PlaceSelectTouchListener implements OnTouchListener {
-	private PlaceSelectionView view;
+	private SmartPlanView view;
 	private static int CLICK_MARGIN = 50;// Il faut effectuer une manoeuvre de 50 pixel pour
 										// que ce soit considere comme un slide
 	private static int LONG_PRESS_DURATION_DETECT = 1500;
@@ -17,7 +17,7 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 
 	private long lastTouchDownTimestamp = 0;
 
-	public PlaceSelectTouchListener(PlaceSelectionView view) {
+	public PlaceSelectTouchListener(SmartPlanView view) {
 		this.view = view;
 		Log.i("PlaceSelectToucheListener", "ListenerTouch OK");
 	}
@@ -55,8 +55,6 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 						"Not much move:" + Math.abs(this.margin_counter)
 								+ ", solved as click");
 				if(this.view.isReadOnly() == false){
-					this.view.moveTargetBoxToRelativeScreen((int) event.getX(),
-							(int) event.getY());
 					this.view.ShowPopupWindow();
 				}
 			}

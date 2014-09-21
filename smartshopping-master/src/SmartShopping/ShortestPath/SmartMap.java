@@ -1,5 +1,10 @@
 package SmartShopping.ShortestPath;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.graphics.Point;
+
 /**
  * Classe représentant notre carte de magasin. Elle est statique pour le moment. 
  * @author Django
@@ -9,6 +14,7 @@ public class SmartMap {
 	
 	
 	// Nos sommets (voir image GraphePlan.png sur Dropbox)
+    private List<Vertex> vertexArr = new ArrayList<Vertex>(); 
     private Vertex v1;
 	private Vertex v2;
 	private Vertex v3;
@@ -41,33 +47,39 @@ public class SmartMap {
 	
 	// constructeur
 	public SmartMap(){
-	    v1 = new Vertex("1");
-		v2 = new Vertex("2");
-		v3 = new Vertex("3");
-		v4 = new Vertex("4");
-		v5 = new Vertex("5");
-		v6 = new Vertex("6");
-		v7 = new Vertex("7");
-		v8 = new Vertex("8");
-		v9 = new Vertex("9");
-		v10 = new Vertex("10");
-		v11 = new Vertex("11");
-		v12 = new Vertex("12");
-		v13 = new Vertex("13");
-		v14 = new Vertex("14");
-		v15 = new Vertex("15");
-		v16 = new Vertex("16");
-		v17 = new Vertex("17");
-		v18 = new Vertex("18");
-		v19 = new Vertex("19");
-		v20 = new Vertex("20");
-		v21 = new Vertex("21");
-		v22 = new Vertex("22");
-		v23 = new Vertex("23");
-		v24 = new Vertex("24");
-		v25 = new Vertex("25");
-		v26 = new Vertex("26");
-		v27 = new Vertex("27");
+		/*
+		 * Map size: 5 * 7
+		 * 
+		 * 
+		 */
+		
+	    v1 = new Vertex("1",1);
+		v2 = new Vertex("2",2);
+		v3 = new Vertex("3",3);
+		v4 = new Vertex("4",4);
+		v5 = new Vertex("5",5);
+		v6 = new Vertex("6",6);
+		v7 = new Vertex("7",8);
+		v8 = new Vertex("8",10);
+		v9 = new Vertex("9",11);
+		v10 = new Vertex("10",12);
+		v11 = new Vertex("11",13);
+		v12 = new Vertex("12",15);
+		v13 = new Vertex("13",16);
+		v14 = new Vertex("14",18);
+		v15 = new Vertex("15",20);
+		v16 = new Vertex("16",21);
+		v17 = new Vertex("17",22);
+		v18 = new Vertex("18",23);
+		v19 = new Vertex("19",24);
+		v20 = new Vertex("20",25);
+		v21 = new Vertex("21",26);
+		v22 = new Vertex("22",30);
+		v23 = new Vertex("23",31);
+		v24 = new Vertex("24",32);
+		v25 = new Vertex("25",33);
+		v26 = new Vertex("26",34);
+		v27 = new Vertex("27",35);
 		
 		
 		// les liens entre les sommets (Edge[Sommet, Distance]) // (voir image GraphePlan.png sur Dropbox)
@@ -104,6 +116,33 @@ public class SmartMap {
 		v25.adjacencies = new Edge[]{ new Edge(v24, DISTANCE), new Edge(v26, DISTANCE)};
 		v26.adjacencies = new Edge[]{ new Edge(v25, DISTANCE), new Edge(v27, DISTANCE)};
 		v27.adjacencies = new Edge[]{ new Edge(v22, DISTANCE), new Edge(v26, DISTANCE)};
+		
+		this.vertexArr.add(v1);
+		this.vertexArr.add(v2);
+		this.vertexArr.add(v3);
+		this.vertexArr.add(v4);
+		this.vertexArr.add(v5);
+		this.vertexArr.add(v6);
+		this.vertexArr.add(v7);
+		this.vertexArr.add(v8);
+		this.vertexArr.add(v9);
+		this.vertexArr.add(v10);
+		this.vertexArr.add(v11);
+		this.vertexArr.add(v12);
+		this.vertexArr.add(v13);
+		this.vertexArr.add(v14);
+		this.vertexArr.add(v15);
+		this.vertexArr.add(v16);
+		this.vertexArr.add(v18);
+		this.vertexArr.add(v19);
+		this.vertexArr.add(v20);
+		this.vertexArr.add(v21);
+		this.vertexArr.add(v22);
+		this.vertexArr.add(v23);
+		this.vertexArr.add(v24);
+		this.vertexArr.add(v25);
+		this.vertexArr.add(v26);
+		this.vertexArr.add(v27);
 	}
 	
 	// pour le moment, user postion = v1
@@ -219,8 +258,23 @@ public class SmartMap {
 	public Vertex getV27() {
 		return v27;
 	}
-
 	
+	//5 * 7
+	public Point getMapSize(){
+		return new Point(5, 7);
+		
+	}
+	
+	public Vertex getVertexByPosition(int position){
+		for(Vertex v : this.vertexArr){
+			if(v.getMapPosition() == position){
+				return v;
+			}
+			
+		}
+		return null;
+		
+	}
 
 	
 	
