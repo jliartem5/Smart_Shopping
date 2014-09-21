@@ -13,12 +13,15 @@ import SmartShopping.OV.OVCategorie;
 import SmartShopping.OV.OVListeProduit;
 import SmartShopping.OV.OVProduit;
 import SmartShopping.OV.OVSmartList;
+import SmartShopping.OV.OVSommet;
 import SmartShopping.OV.RepListeProduit;
 import SmartShopping.OV.RepProduit;
 import SmartShopping.OV.RepSmartList;
+import SmartShopping.OV.RepSommet;
 import SmartShopping.OV.ReqListeProduit;
 import SmartShopping.OV.ReqProduit;
 import SmartShopping.OV.ReqSmartList;
+import SmartShopping.OV.ReqSommet;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -65,6 +68,9 @@ public class MainActivity extends FragmentActivity {
 	private List<OVCategorie> _allCategorie = new ArrayList<OVCategorie>();
 	private List<OVProduit> _allProduits = new ArrayList<OVProduit>();
 	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
+	
+	private List<OVSommet> _allSommets = new ArrayList<OVSommet>();
+	
 	private OVSmartList _mySmartList;
 	
 	private FragmentManager	_fm;
@@ -149,8 +155,21 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		});
-
 		
+		// requete tous les sommets
+		ReqSommet reqSommet = new ReqSommet();
+		reqSommet.requestTousLesSommets(new OnDataReturnListener(){
+
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				RepSommet repS = new RepSommet(jobj.toString());
+				MainActivity.this._allSommets = repS.getListeSommet();
+				Log.v("#### JSON ####", jobj.toString());
+				Log.v("#### LISTE SOMMETS ####", MainActivity.this._allSommets.toString());
+			}
+		});
+
+		// requete tous les produits
 		ReqProduit reqProduit = new ReqProduit();
 		reqProduit.requestTousLesProduits(new OnDataReturnListener(){
 

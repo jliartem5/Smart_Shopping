@@ -21,8 +21,8 @@ import android.view.Window;
 import android.widget.FrameLayout;
 
 /**
- * Classe qui permet de gerer le systeme de positionnement du PMR.
- * @author Shinthujan, Jian, Walid, Wally, Youssef
+ * Classe qui permet l'affichage de la carte et des trajets
+ * @author Jian, Django
  */
 public class SmartPlanActivity extends Activity {
 	
@@ -38,8 +38,7 @@ public class SmartPlanActivity extends Activity {
 		setContentView(R.layout.activity_select_place);
 		FrameLayout layout = (FrameLayout) SmartPlanActivity.this.findViewById(R.id.place_selection_layout);
 		view = (SmartPlanView) layout.getChildAt(0);
-		
-		
+
 	}
 	
 	

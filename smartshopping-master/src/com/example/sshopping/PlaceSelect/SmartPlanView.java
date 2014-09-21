@@ -118,7 +118,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		this.planOffset = relativeCentralPoint;
 
 		Vertex beginPosition = this.sm.getUserPosition();
-		Vertex targetPosition = this.sm.getVertexByPosition(24);
+		Vertex targetPosition = this.sm.getV14();//getVertexByPosition(26); // en dur pour le moment ne fonctionne pas très bien
 		this.pathDrawer = new PathDrawer(this, this.sm, beginPosition, targetPosition);
 		
 		// Et a la fin on commence a dessiner le plan
