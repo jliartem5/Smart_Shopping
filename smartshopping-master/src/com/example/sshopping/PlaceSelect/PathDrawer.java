@@ -41,11 +41,6 @@ public class PathDrawer {
 		this.endPoint = endPosition;
 		this.smartMap = sm;
 		this._v = view;
-		Point oneCaseSize = new Point(
-				this._v.getPlan().getWidth() / this.smartMap.getMapSize().x,
-				this._v.getPlan().getHeight() / this.smartMap.getMapSize().y
-				);
-		
 		this.from = BitmapFactory.decodeResource(view.getResources(),
 				R.drawable.smartshopping_logo);
 		this.to = BitmapFactory.decodeResource(view.getResources(),
@@ -68,7 +63,7 @@ public class PathDrawer {
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		paint.setStrokeWidth(30);
+		paint.setStrokeWidth(25);
 		paint.setStyle(Style.STROKE);
 		
 		paint.setColor(Color.rgb(203, 0, 115));
@@ -76,34 +71,63 @@ public class PathDrawer {
 		
 		Path drawPath = new Path();
 		float fromLeft=0, fromTop=0, toLeft=0, toTop=0;
+		
+		Point oneCaseSize = new Point(
+				this._v.getPlan().getWidth() /  (this.smartMap.getMapSize().x + this.smartMap.getMapSize().x/2),
+				this._v.getPlan().getHeight() / (this.smartMap.getMapSize().y+ this.smartMap.getMapSize().y/2)
+				);
+		
+		Point mapImgOffset = this._v.getPlanOffset();
+		for(int i = 0;i<this.smartMap.getMapSize().y + this.smartMap.getMapSize().y/2;++i){
+			canvas.drawLine(0 + mapImgOffset.x , oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, canvas.getWidth(), oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, new Paint());
+		}
+		for(int i = 0;i<this.smartMap.getMapSize().x + this.smartMap.getMapSize().x/2;++i){
+			canvas.drawLine(oneCaseSize.x + mapImgOffset.x + i * oneCaseSize.x, 0 + mapImgOffset.y, i*oneCaseSize.x + oneCaseSize.x + mapImgOffset.x, canvas.getHeight(), new Paint());
+		}
+		
 		for(int i=0; i<path.size();++i){
 			Vertex from = path.get(i);
 			
 			Point mapDrawPosition  = this.CalculMapDrawNormalizedPosition(from.mapPosition);
 			
-			Point oneCaseSize = new Point(
-					this._v.getPlan().getWidth() / this.smartMap.getMapSize().x,
-					this._v.getPlan().getHeight() / this.smartMap.getMapSize().y
-					);
-			
-			int startX = mapDrawPosition.x * oneCaseSize.x - (oneCaseSize.x/2);
-			int startY = mapDrawPosition.y * oneCaseSize.y + (oneCaseSize.y / 2);
+			int startX = 0;
+			if(mapDrawPosition.x%2 == 0){//Pair, le point est entre les deux points impair
+				int left = this.getImpairPosition(oneCaseSize.x, mapDrawPosition.x-1);
+				int right = this.getImpairPosition(oneCaseSize.x, mapDrawPosition.x+1);
+				startX = (left + right) /2;
+			}else{//Impair
+				startX = this.getImpairPosition(oneCaseSize.x, mapDrawPosition.x);
+			}
+			int startY = 0;
+			if(mapDrawPosition.y % 2 == 0){
+				int top = this.getImpairPosition(oneCaseSize.y, mapDrawPosition.y   - 1);
+				int bottom = this.getImpairPosition(oneCaseSize.y, mapDrawPosition.y  + 1);
+				startY = (top + bottom) / 2;
+			}else{
+				startY = this.getImpairPosition(oneCaseSize.y, mapDrawPosition.y);
+			}
 
 			if(i == 0){
-				drawPath.moveTo(startX, startY);
-				fromLeft= startX - (this.from.getWidth()/2);
-				fromTop = startY - (this.from.getHeight()/2);
+				drawPath.moveTo(startX + mapImgOffset.x, startY + mapImgOffset.y);
+				fromLeft= startX - (this.from.getWidth()/2) + mapImgOffset.x;
+				fromTop = startY - (this.from.getHeight()/2) + mapImgOffset.y;
 			}else{
-				drawPath.lineTo(startX, startY);
+				drawPath.lineTo(startX + mapImgOffset.x, startY + mapImgOffset.y);
 				if(i == path.size()-1){
-					toLeft = startX- (this.to.getWidth()/2);
-					toTop = startY - (this.to.getWidth()/2);
+					toLeft = startX- (this.to.getWidth()/2) + mapImgOffset.x;
+					toTop = startY - (this.to.getWidth()/2) + mapImgOffset.y;
 				}
 			}
 		}
 		canvas.drawPath(drawPath, paint);
-		canvas.drawBitmap(from, fromLeft, fromTop, paint);
-		canvas.drawBitmap(to, toLeft, toTop, paint);
+		//canvas.drawBitmap(from, fromLeft, fromTop, paint);
+		//canvas.drawBitmap(to, toLeft, toTop, paint);
+	}
+	
+	int getImpairPosition(int caseSideSize, int drawPosition){
+		int offsetNoeud = drawPosition / 2;
+		int position= (drawPosition + offsetNoeud) * caseSideSize - (caseSideSize /2);
+		return position;
 	}
 	
 	public Point CalculMapDrawNormalizedPosition(int mapPosition){
@@ -113,7 +137,7 @@ public class PathDrawer {
 		
 		Point size = this.smartMap.getMapSize();
 		int x = ((mapPosition - 1) % size.x)+1;// ((5-1)%5)+1 = 5; 
-		int y = ((mapPosition - 1) / size.x)+1;//((5-1)/7)+1 = 1;
+		int y = ((mapPosition - 1) / size.x)+1;//((5-1)/5)+1 = 1;
 		
 		return new Point(x,y);
 	}

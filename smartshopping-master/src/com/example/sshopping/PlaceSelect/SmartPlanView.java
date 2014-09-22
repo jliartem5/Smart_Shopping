@@ -26,7 +26,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 	private boolean continueToWork = true;
 
 	private SurfaceHolder holder;
-	private int FPS = 1000 / 30;
+	private int FPS = 1000 / 30;//1000/30=
 
 	private Bitmap plan;
 	
@@ -116,9 +116,10 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		Point relativeCentralPoint = this.calculRelativeCentralPoint(this.plan.getWidth(), this.plan.getHeight());
 
 		this.planOffset = relativeCentralPoint;
-
-		Vertex beginPosition = this.sm.getUserPosition();
-		Vertex targetPosition = this.sm.getV14();//getVertexByPosition(26); // en dur pour le moment ne fonctionne pas très bien
+		
+		Vertex beginPosition = this.sm.getVertexByPosition(8);
+		Vertex targetPosition = this.sm.getVertexByPosition(30);//getVertexByPosition(26); // en dur pour le moment ne fonctionne pas très bien
+		
 		this.pathDrawer = new PathDrawer(this, this.sm, beginPosition, targetPosition);
 		
 		// Et a la fin on commence a dessiner le plan
@@ -172,7 +173,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 
 			Paint clearPaint = new Paint();
 			//clearPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
-			clearPaint.setColor(Color.WHITE);
+			clearPaint.setColor(Color.BLACK);
 			canvas.drawPaint(clearPaint);
 			//clearPaint.setXfermode(new PorterDuffXfermode(Mode.SRC));
 
