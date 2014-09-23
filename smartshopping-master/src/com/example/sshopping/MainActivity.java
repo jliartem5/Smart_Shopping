@@ -69,7 +69,7 @@ public class MainActivity extends FragmentActivity {
 	private List<OVProduit> _allProduits = new ArrayList<OVProduit>();
 	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
 	
-	private List<OVSommet> _allSommets = new ArrayList<OVSommet>();
+	private static List<OVSommet> _allSommets = null;
 	
 	private OVSmartList _mySmartList;
 	
@@ -163,9 +163,11 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void OnDataReturn(JSONObject jobj) {
 				RepSommet repS = new RepSommet(jobj.toString());
-				MainActivity.this._allSommets = repS.getListeSommet();
+				MainActivity._allSommets = repS.getListeSommet();
+				
+				
 				Log.v("#### JSON ####", jobj.toString());
-				Log.v("#### LISTE SOMMETS ####", MainActivity.this._allSommets.toString());
+				Log.v("#### LISTE SOMMETS ####", MainActivity._allSommets.toString());
 			}
 		});
 
@@ -351,6 +353,10 @@ public class MainActivity extends FragmentActivity {
 		return null;
 	}
 	
+	public static List<OVSommet> getMapSommets(){
+		return MainActivity._allSommets;
+	}
+	
 	public boolean AddProduitRowLineView(OVListeProduit prodToShow){
 
 		OVProduit clickedProduit = this.getProduitById(prodToShow.getIdProduit());
@@ -408,7 +414,23 @@ public class MainActivity extends FragmentActivity {
 			TableRow.LayoutParams p =new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 			p.gravity = Gravity.RIGHT;
 			btnGo.setLayoutParams(p);
+			btnGo.setOnClickListener(new OnClickListener(){
 
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					if(MainActivity._allSommets != null){
+						OVProduit prod = (OVProduit)arg0.getTag();
+						int idCat = prod.getOvCategorie().getId();
+						Intent switchToPlanActivity = new Intent( MainActivity.this, SmartPlanActivity.class);
+						switchToPlanActivity.putExtra("idCategorie", idCat);
+						startActivity(switchToPlanActivity);
+					}else{
+						//Alert?
+					}
+				}
+				
+			});
 
 			//btnActiver.setOnClickListener(handler_btnActiver);
 			tableRow.addView(checkbox);

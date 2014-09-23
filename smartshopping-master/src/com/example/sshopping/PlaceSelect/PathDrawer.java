@@ -24,8 +24,6 @@ import android.util.Log;
 public class PathDrawer {
 	
 	private Point planOffset;//
-	private Vertex beginPoint;//Place de la personne ou de départ à cet instant
-	private Vertex endPoint;
 	private List<Vertex> path;
 	private SmartMap smartMap;
 	private SmartPlanView _v;
@@ -35,19 +33,16 @@ public class PathDrawer {
 	private Bitmap from;
 	private Bitmap to;
 	
-	public PathDrawer(SmartPlanView view, SmartMap sm, Vertex beginPosition, Vertex endPosition){
+	
+	public PathDrawer(SmartPlanView view, SmartMap sm, List< Vertex > calculedPath){
 		this.planOffset = view.getPlanOffset();
-		this.beginPoint = beginPosition;
-		this.endPoint = endPosition;
 		this.smartMap = sm;
 		this._v = view;
 		this.from = BitmapFactory.decodeResource(view.getResources(),
 				R.drawable.smartshopping_logo);
 		this.to = BitmapFactory.decodeResource(view.getResources(),
 				R.drawable.finish);
-		
-		Dijkstra.computePaths(beginPoint);
-		this.path = Dijkstra.getShortestPathTo(endPoint);
+		this.path = calculedPath;
 		Log.v("Path length:", path.size()+"");
 
 		// on vois quel sommet est le plus proche
@@ -56,7 +51,6 @@ public class PathDrawer {
 					+ " est à une distance de : " + v.minDistance);
 			Log.v("#### TEST ####", "Le chemin pour y arriver : " + Dijkstra.getShortestPathTo(v));
         }
-		
 	}
 	
 	public void Draw(Canvas canvas){

@@ -20,7 +20,7 @@ public class OVSommet extends OVObject {
             object = new JSONObject(jsonObject);
             this.id = Integer.parseInt(object.get("id").toString());
             this.numSommet = object.getInt("numSommet");
-            this.idCategorie = object.getInt("ovCategorie");
+            this.idCategorie = object.getInt("idCategorie");
         } 
         catch (JSONException ex) 
         {

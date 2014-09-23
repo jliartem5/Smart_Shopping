@@ -3,6 +3,7 @@ package com.example.sshopping.PlaceSelect;
 import com.example.sshopping.R;
 import com.example.sshopping.SmartPlanActivity;
 
+import SmartShopping.ShortestPath.Dijkstra;
 import SmartShopping.ShortestPath.SmartMap;
 import SmartShopping.ShortestPath.Vertex;
 import android.content.Context;
@@ -41,7 +42,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 
 	private SmartMap sm;
 	private PathDrawer pathDrawer = null;
-	
+	private Integer targetIdCategorie = null;
 
 	public SmartPlanView(Context context, AttributeSet attrs) {
 		super(context);
@@ -67,6 +68,10 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		this.isReadOnly = ro;
 		Log.i("LG", "Place selection view set to read ONLY");
 		
+	}
+	
+	public void setTargetCategorie(int catID){
+		this.targetIdCategorie = catID;
 	}
 
 	public int getFPS() {
@@ -118,9 +123,24 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		this.planOffset = relativeCentralPoint;
 		
 		Vertex beginPosition = this.sm.getVertexByPosition(8);
-		Vertex targetPosition = this.sm.getVertexByPosition(30);//getVertexByPosition(26); // en dur pour le moment ne fonctionne pas très bien
 		
-		this.pathDrawer = new PathDrawer(this, this.sm, beginPosition, targetPosition);
+		Dijkstra.computePaths(beginPosition); 
+		
+		// initialisation
+		int min = 999;
+		Vertex minVertex = new Vertex("min", 0, 0);
+		
+		// on cherche la catégorie qui nous intéresse la plus proche
+		for(Vertex v : sm.getVertexArr()){
+			if((v.getIdCategorie() == targetIdCategorie) && (v.minDistance < min)){
+				Log.i("#########", ""+ v.minDistance);
+				min = (int) v.minDistance;
+        		minVertex = v;
+        	}
+		}
+		Vertex targetPosition = minVertex;
+
+		this.pathDrawer = new PathDrawer(this, this.sm, Dijkstra.getShortestPathTo(targetPosition));
 		
 		// Et a la fin on commence a dessiner le plan
 		try{

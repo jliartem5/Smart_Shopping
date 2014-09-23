@@ -28,19 +28,21 @@ public class SmartPlanActivity extends Activity {
 	
 	PlaceSelectPopupWindow popupWindow;
 	SmartPlanView view;
+	int idCategorie;
 	
 	int requestCode;
 	boolean isReadOnly = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_select_place);
 		FrameLayout layout = (FrameLayout) SmartPlanActivity.this.findViewById(R.id.place_selection_layout);
+		this.idCategorie = this.getIntent().getIntExtra("idCategorie", -1);
 		view = (SmartPlanView) layout.getChildAt(0);
-
+		view.setTargetCategorie(this.idCategorie);
 	}
-	
 	
 	@Override
 	protected void onStart(){
