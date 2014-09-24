@@ -1,5 +1,9 @@
 package com.example.sshopping.PlaceSelect;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.example.sshopping.R;
 import com.example.sshopping.SmartPlanActivity;
 
@@ -35,6 +39,9 @@ public class SmartPlanView extends SurfaceView implements Callback,
 	private float planScale;// nous servira pour redimentionner le plan et
 							// repositionner les places
 	
+	private Map<Vertex, int[]> markersPosition = null;
+	
+	
 	private Point screenSize;
 	private SmartPlanActivity context;
 	
@@ -42,7 +49,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 
 	private SmartMap sm;
 	private PathDrawer pathDrawer = null;
-	private Integer targetIdCategorie = null;
+	private List<Integer> targetIdCategorie = null;
 
 	public SmartPlanView(Context context, AttributeSet attrs) {
 		super(context);
@@ -53,7 +60,19 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		this.sm = new SmartMap();
 
 		this.setKeepScreenOn(true);// On garde l'ecran allume
-		//this.setOnTouchListener(new PlaceSelectTouchListener(this));
+		
+		SmartPlanTouchListener sptl = new SmartPlanTouchListener(this);
+		sptl.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+			@Override
+			public void OnMarkerClick(Vertex v, int[] position) {
+
+				Log.d("##############", "Touch on the marker of vertex: "+v.toString());
+
+			}
+			
+		});
+		this.setOnTouchListener(sptl);
 		this.setLongClickable(true);
 		
 		this.workThread = new Thread(this);
@@ -70,7 +89,7 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		
 	}
 	
-	public void setTargetCategorie(int catID){
+	public void setTargetCategorie(List<Integer> catID){
 		this.targetIdCategorie = catID;
 	}
 
@@ -90,6 +109,16 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		return this.plan;
 	}
 	
+	public void setMarkersPositions(Map<Vertex, int[]> markersPosition){
+		this.markersPosition = markersPosition;
+		// ontouche
+		//	clic sur un sommet ?
+		//		==> quand on clic sur un sommet : listener(Vertex v) ou listener(IdCat ?)
+	}
+	
+	public Map<Vertex, int[]> getMarkersPositions(){
+		return this.markersPosition;
+	}
 	
 	public void ShowPopupWindow(){
 		this.context.ShowPopupWindow();
@@ -122,25 +151,60 @@ public class SmartPlanView extends SurfaceView implements Callback,
 
 		this.planOffset = relativeCentralPoint;
 		
-		Vertex beginPosition = this.sm.getVertexByPosition(8);
-		
+		// position de départ
+		Vertex beginPosition = this.sm.getUserPosition();
+	    // le chemin de vertex pas lequem on va devoir passer (ce qu'on cherche)
+		List<Vertex> pathToFollow = new ArrayList<Vertex>();
+		//la liste des idCategories par lesquels ont doit passer (récupérée à partir de la liste de course).
+		List<Integer> categoriesToPass = new ArrayList<Integer>();
+		categoriesToPass = targetIdCategorie;
+		Log.i("##########", "Cat count:"+categoriesToPass.size());
 		Dijkstra.computePaths(beginPosition); 
-		
-		// initialisation
-		int min = 999;
-		Vertex minVertex = new Vertex("min", 0, 0);
-		
-		// on cherche la catégorie qui nous intéresse la plus proche
-		for(Vertex v : sm.getVertexArr()){
-			if((v.getIdCategorie() == targetIdCategorie) && (v.minDistance < min)){
-				Log.i("#########", ""+ v.minDistance);
-				min = (int) v.minDistance;
-        		minVertex = v;
-        	}
-		}
-		Vertex targetPosition = minVertex;
+		pathToFollow.add(beginPosition);
 
-		this.pathDrawer = new PathDrawer(this, this.sm, Dijkstra.getShortestPathTo(targetPosition));
+		// on boucle jusqu'à êtr epassé par toutes les catégories
+		while(!categoriesToPass.isEmpty()){
+					
+			// initialisation
+			int min = 999;
+			Vertex minVertex = new Vertex("min", 0, 0);
+			
+			// on cherche la catégorie qui nous intéresse la plus proche
+			for(Vertex v : sm.getVertexArr()){
+				if((categoriesToPass.contains(v.getIdCategorie())) && (v.minDistance < min)){
+					Log.i("#########", ""+ v.minDistance);
+					min = (int) v.minDistance;
+	        		minVertex = v;
+	        		
+
+	        	}
+			}
+    		//on copie les elements de plus curt chemin dans pathtofollow
+    		for(Vertex vertexFound : Dijkstra.getShortestPathTo(minVertex)){
+    			//if(!pathToFollow.contains(vertexFound))
+    				pathToFollow.add(vertexFound);
+    		}
+
+			// on l'ajoute à notre passage
+			//pathToFollow.add(minVertex); 
+			
+			for(Vertex v : sm.getVertexArr()) {
+	            v.reinitializeVertex();
+	        } 
+			// on recalcule le chemin à partir du nouveau vertex
+			Dijkstra.computePaths(minVertex);     
+
+    		//Pour chaque fin de sous-trajet, on set market à true
+    		pathToFollow.get(pathToFollow.size()-1).setMarker(true);
+			
+			// on supprime la categorie par laquelle on est passée
+			Log.i("CATEGORIE ", ""+categoriesToPass);
+			categoriesToPass.remove(new Integer(minVertex.idCategorie));
+			Log.i("CATEGORIE AFTER REMOVE ", ""+categoriesToPass);
+		}
+		Log.i("CHEMIN FINAL", ""+pathToFollow);
+		
+		this.pathDrawer = new PathDrawer(this, this.sm, pathToFollow);
 		
 		// Et a la fin on commence a dessiner le plan
 		try{

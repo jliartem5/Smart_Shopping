@@ -1,6 +1,9 @@
 package com.example.sshopping.PlaceSelect;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.sshopping.R;
 
@@ -32,25 +35,22 @@ public class PathDrawer {
 
 	private Bitmap from;
 	private Bitmap to;
-	
+	private Bitmap marker;
 	
 	public PathDrawer(SmartPlanView view, SmartMap sm, List< Vertex > calculedPath){
 		this.planOffset = view.getPlanOffset();
 		this.smartMap = sm;
 		this._v = view;
+		
 		this.from = BitmapFactory.decodeResource(view.getResources(),
 				R.drawable.smartshopping_logo);
 		this.to = BitmapFactory.decodeResource(view.getResources(),
 				R.drawable.finish);
+		this.marker = BitmapFactory.decodeResource(view.getResources(), R.drawable.localisation_article);
+		
 		this.path = calculedPath;
 		Log.v("Path length:", path.size()+"");
 
-		// on vois quel sommet est le plus proche
-		for (Vertex v : path){
-			Log.v("#### TEST ####", "DANS LA BOUCLE : Le sommet  "+ v 
-					+ " est à une distance de : " + v.minDistance);
-			Log.v("#### TEST ####", "Le chemin pour y arriver : " + Dijkstra.getShortestPathTo(v));
-        }
 	}
 	
 	public void Draw(Canvas canvas){
@@ -64,6 +64,7 @@ public class PathDrawer {
 		paint.setMaskFilter(new BlurMaskFilter(this.size/5 * this._v.getPlanScale(), Blur.NORMAL));
 		
 		Path drawPath = new Path();
+		Map<Vertex , int[]> markersTmpPosition = new HashMap<Vertex, int[]>();
 		float fromLeft=0, fromTop=0, toLeft=0, toTop=0;
 		
 		Point oneCaseSize = new Point(
@@ -72,17 +73,15 @@ public class PathDrawer {
 				);
 		
 		Point mapImgOffset = this._v.getPlanOffset();
-		for(int i = 0;i<this.smartMap.getMapSize().y + this.smartMap.getMapSize().y/2;++i){
+		/*for(int i = 0;i<this.smartMap.getMapSize().y + this.smartMap.getMapSize().y/2;++i){
 			canvas.drawLine(0 + mapImgOffset.x , oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, canvas.getWidth(), oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, new Paint());
 		}
 		for(int i = 0;i<this.smartMap.getMapSize().x + this.smartMap.getMapSize().x/2;++i){
 			canvas.drawLine(oneCaseSize.x + mapImgOffset.x + i * oneCaseSize.x, 0 + mapImgOffset.y, i*oneCaseSize.x + oneCaseSize.x + mapImgOffset.x, canvas.getHeight(), new Paint());
-		}
-		
+		}*/
 		for(int i=0; i<path.size();++i){
-			Vertex from = path.get(i);
-			
-			Point mapDrawPosition  = this.CalculMapDrawNormalizedPosition(from.mapPosition);
+			Vertex v = path.get(i);
+			Point mapDrawPosition  = this.CalculMapDrawNormalizedPosition(v.mapPosition);
 			
 			int startX = 0;
 			if(mapDrawPosition.x%2 == 0){//Pair, le point est entre les deux points impair
@@ -100,7 +99,6 @@ public class PathDrawer {
 			}else{
 				startY = this.getImpairPosition(oneCaseSize.y, mapDrawPosition.y);
 			}
-
 			if(i == 0){
 				drawPath.moveTo(startX + mapImgOffset.x, startY + mapImgOffset.y);
 				fromLeft= startX - (this.from.getWidth()/2) + mapImgOffset.x;
@@ -112,10 +110,19 @@ public class PathDrawer {
 					toTop = startY - (this.to.getWidth()/2) + mapImgOffset.y;
 				}
 			}
+			if(v.getMarker()){// si c'est un sommet avec une categorie à rammasser, on place un marker
+				markersTmpPosition.put(v, new int[]{startX + mapImgOffset.x - (this.marker.getWidth()/2), startY + mapImgOffset.y- (this.marker.getHeight()/2)-20});
+			}
 		}
 		canvas.drawPath(drawPath, paint);
-		//canvas.drawBitmap(from, fromLeft, fromTop, paint);
-		//canvas.drawBitmap(to, toLeft, toTop, paint);
+		canvas.drawBitmap(from, fromLeft, fromTop, paint);
+		canvas.drawBitmap(to, toLeft, toTop, paint);
+		
+		
+		for(Vertex key : markersTmpPosition.keySet()){
+			canvas.drawBitmap(this.marker, markersTmpPosition.get(key)[0], markersTmpPosition.get(key)[1], paint);
+		}
+		this._v.setMarkersPositions(markersTmpPosition);
 	}
 	
 	int getImpairPosition(int caseSideSize, int drawPosition){

@@ -6,6 +6,7 @@ public class Vertex implements Comparable<Vertex>
     public final String name;
     public final int mapPosition;//Position relative au SmartPlan
     public final int idCategorie;
+    private boolean markerCategorie = false;
     
     public int getIdCategorie() {
 		return idCategorie;
@@ -20,6 +21,14 @@ public class Vertex implements Comparable<Vertex>
     public Edge[] getAdjacencies() {
 		return adjacencies;
 	}
+    
+    public void setMarker(boolean b){
+    	this.markerCategorie = b;
+    }
+    
+    public boolean getMarker(){
+    	return this.markerCategorie;
+    }
 
 	public void setAdjacencies(Edge[] adjacencies) {
 		this.adjacencies = adjacencies;
@@ -35,10 +44,15 @@ public class Vertex implements Comparable<Vertex>
     	this.idCategorie = idCat;
     }
     
-    public String toString() { return name+"-->"+this.mapPosition+";"+this.idCategorie; }
+    public String toString() { return name; }
     
     public int compareTo(Vertex other)
     {
         return Double.compare(minDistance, other.minDistance);
     }
+    
+	public void reinitializeVertex(){
+		minDistance = Double.POSITIVE_INFINITY;
+		previous = null;
+	}
 }

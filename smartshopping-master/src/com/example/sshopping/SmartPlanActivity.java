@@ -28,7 +28,7 @@ public class SmartPlanActivity extends Activity {
 	
 	PlaceSelectPopupWindow popupWindow;
 	SmartPlanView view;
-	int idCategorie;
+	List<Integer> idCategorie = new ArrayList<Integer>();
 	
 	int requestCode;
 	boolean isReadOnly = false;
@@ -39,7 +39,17 @@ public class SmartPlanActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_select_place);
 		FrameLayout layout = (FrameLayout) SmartPlanActivity.this.findViewById(R.id.place_selection_layout);
-		this.idCategorie = this.getIntent().getIntExtra("idCategorie", -1);
+		if(this.getIntent().hasExtra("idCategorie")){
+			this.idCategorie.add(this.getIntent().getIntExtra("idCategorie", -1));
+		}
+		if(this.getIntent().hasExtra("listeCategorie")){
+			
+			List<Integer> idCats = this.getIntent().getIntegerArrayListExtra("listeCategorie");
+			Log.i("############", "Nb in spa:"+idCats.size());
+			for(int id : idCats){
+				this.idCategorie.add(id);
+			}
+		}
 		view = (SmartPlanView) layout.getChildAt(0);
 		view.setTargetCategorie(this.idCategorie);
 	}

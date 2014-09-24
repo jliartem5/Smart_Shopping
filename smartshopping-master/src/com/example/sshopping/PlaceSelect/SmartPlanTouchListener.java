@@ -1,12 +1,20 @@
 package com.example.sshopping.PlaceSelect;
 
+import java.util.Map;
+
+import com.example.sshopping.R;
+
+import SmartShopping.ShortestPath.Vertex;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
-public class PlaceSelectTouchListener implements OnTouchListener {
+public class SmartPlanTouchListener implements OnTouchListener {
 	private SmartPlanView view;
 	private static int CLICK_MARGIN = 50;// Il faut effectuer une manoeuvre de 50 pixel pour
 										// que ce soit considere comme un slide
@@ -16,24 +24,30 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 	private float margin_counter = 0;
 
 	private long lastTouchDownTimestamp = 0;
+	Bitmap marker;
+	private OnMarkerClickListener  onMarkerClick = null;
 
-	public PlaceSelectTouchListener(SmartPlanView view) {
+	public SmartPlanTouchListener(SmartPlanView view) {
 		this.view = view;
+		this.marker = BitmapFactory.decodeResource(view.getResources(), R.drawable.localisation_article);
 		Log.i("PlaceSelectToucheListener", "ListenerTouch OK");
+	}
+	
+	public void setOnMarkerClickListener(OnMarkerClickListener omcl){
+		this.onMarkerClick = omcl;
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		// TODO Auto-generated method stub
+		int userX =(int)(event.getX());
+		int userY =(int)(event.getY());
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			Log.i("PlaceSelectToucheListener", "ActionDown");
 			this.lastX = event.getX();
 			this.lastY = event.getY();
 			this.lastTouchDownTimestamp = System.currentTimeMillis();
-
-			LongPressThread thread = new LongPressThread(event);
-			//thread.run();
 			
 			break;
 		case MotionEvent.ACTION_MOVE:
@@ -41,7 +55,7 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 			int dy = (int) (event.getY() - this.lastY);
 			this.margin_counter += Math.abs(dy+dx);
 			if (this.margin_counter > CLICK_MARGIN) {
-				this.view.ScrollPlan(dx*2, dy * 2);
+				//this.view.ScrollPlan(dx*2, dy * 2);
 
 				this.lastX = event.getX();
 				this.lastY = event.getY();
@@ -54,9 +68,23 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 				Log.i("PlaceSelectToucheListener",
 						"Not much move:" + Math.abs(this.margin_counter)
 								+ ", solved as click");
-				if(this.view.isReadOnly() == false){
-					this.view.ShowPopupWindow();
+				Map<Vertex, int[]> markersPositions = this.view.getMarkersPositions();
+				
+				if(markersPositions != null){
+					for(Vertex key : markersPositions.keySet()){
+						int[] leftTop = markersPositions.get(key);
+						Rect rct = new Rect(leftTop[0], leftTop[1], leftTop[0] + this.marker.getWidth(), leftTop[1]+this.marker.getHeight());
+						if(rct.contains(userX, userY)){
+							if(this.onMarkerClick != null){
+								this.onMarkerClick.OnMarkerClick(key, leftTop);
+							}
+							break;
+						}
+					}
 				}
+				/*if(this.view.isReadOnly() == false){
+					this.view.ShowPopupWindow();
+				}*/
 			}
 
 			this.margin_counter = 0;
@@ -64,34 +92,6 @@ public class PlaceSelectTouchListener implements OnTouchListener {
 			break;
 		}
 		return true;
-	}
-
-	private class LongPressThread extends Thread {
-
-		public MotionEvent event = null;
-
-		public LongPressThread(MotionEvent e) {
-			this.event = e;
-
-		}
-
-		public void setEvent(MotionEvent e) {
-			event = e;
-		}
-
-		@Override
-		public void run() {
-			long startTime = System.currentTimeMillis();
-			long time = 0;
-
-			while (event.getAction() == MotionEvent.ACTION_DOWN) {
-				time = System.currentTimeMillis() - startTime;
-				if (time > LONG_PRESS_DURATION_DETECT) {
-					System.out.println("LOOONG CLICK!!");
-					return;
-				}
-			}
-		}
 	}
 
 }

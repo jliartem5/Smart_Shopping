@@ -35,7 +35,6 @@ public class SmartMap {
 		if(sommets != null){
 			for(OVSommet ovs : sommets){
 				Vertex v = new Vertex("N°"+ovs.getNumSommet(), ovs.getNumSommet(), ovs.getIdCategorie());
-				Log.i("########", v.toString());
 				this.vertexArr.add(v);
 			}
 		}else{

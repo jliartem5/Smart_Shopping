@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity {
 	private AutoCompleteTextView _autocomleteView;
 	private TableLayout _tableProduit;
 	private Button _btnDelete;
+	private Button _speedShopping;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -155,6 +156,33 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		});
+		this._speedShopping = (Button)this.findViewById(R.id.btn_spped_shopping);
+		this._speedShopping.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+
+				
+				ArrayList<Integer> listCategorieID = new ArrayList<Integer>();
+
+				for(int i = 0, j = MainActivity.this._tableProduit.getChildCount(); i < j; i++){
+					// then, you can remove the the row you want...
+					// for instance...
+					TableRow row = (TableRow) MainActivity.this._tableProduit.getChildAt(i);
+
+					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
+					OVProduit oneProd = (OVProduit) row.getChildAt(1).getTag();
+					if(/*!isCheckboxChecked && */listCategorieID.contains(oneProd.getOvCategorie().getId()) == false){
+						listCategorieID.add(oneProd.getOvCategorie().getId());
+					}
+				}
+				Log.i("############","Nb in MA:"+listCategorieID.size());
+				Intent intent = new Intent(MainActivity.this, SmartPlanActivity.class);
+				intent.putIntegerArrayListExtra("listeCategorie", listCategorieID);
+				startActivity(intent);
+			}
+		});
+		
 		
 		// requete tous les sommets
 		ReqSommet reqSommet = new ReqSommet();
@@ -401,6 +429,7 @@ public class MainActivity extends FragmentActivity {
 			// Creation textView
 			final TextView text = new TextView(MainActivity.this);
 			text.setTextSize(15);
+			text.setTag(clickedProduit);
 			text.setText(clickedProduit.getNomProduit() + "    " + clickedProduit.getPrix() + "€");
 			text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
