@@ -92,6 +92,7 @@ public class SmartMap {
 	
 	// pour le moment, user postion = v1
 	public Vertex getUserPosition(){
+		//	if(vertexArr != null) il y a eu un bug d'index à un moment...
 		return this.vertexArr.get(0);
 	}
 

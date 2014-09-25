@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity {
 	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
 	
 	private static List<OVSommet> _allSommets = null;
+	private static List<OVProduit> _smartListEtablished = new ArrayList<OVProduit>();
 	
 	private OVSmartList _mySmartList;
 	
@@ -172,6 +173,7 @@ public class MainActivity extends FragmentActivity {
 
 					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
 					OVProduit oneProd = (OVProduit) row.getChildAt(1).getTag();
+					MainActivity._smartListEtablished.add(oneProd);
 					if(/*!isCheckboxChecked && */listCategorieID.contains(oneProd.getOvCategorie().getId()) == false){
 						listCategorieID.add(oneProd.getOvCategorie().getId());
 					}
@@ -383,6 +385,10 @@ public class MainActivity extends FragmentActivity {
 	
 	public static List<OVSommet> getMapSommets(){
 		return MainActivity._allSommets;
+	}
+	
+	public static List<OVProduit> getSmartListEtablished(){
+		return MainActivity._smartListEtablished;
 	}
 	
 	public boolean AddProduitRowLineView(OVListeProduit prodToShow){

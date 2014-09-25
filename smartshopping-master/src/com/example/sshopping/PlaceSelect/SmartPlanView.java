@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.example.sshopping.MainActivity;
 import com.example.sshopping.R;
 import com.example.sshopping.SmartPlanActivity;
 
+import SmartShopping.OV.OVProduit;
 import SmartShopping.ShortestPath.Dijkstra;
 import SmartShopping.ShortestPath.SmartMap;
 import SmartShopping.ShortestPath.Vertex;
+import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +28,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 public class SmartPlanView extends SurfaceView implements Callback,
 		Runnable {
@@ -68,7 +74,29 @@ public class SmartPlanView extends SurfaceView implements Callback,
 			public void OnMarkerClick(Vertex v, int[] position) {
 
 				Log.d("##############", "Touch on the marker of vertex: "+v.toString());
+				
+				String productsToPickUp = "";
+				for(OVProduit p : MainActivity.getSmartListEtablished())
+					if(p.getOvCategorie().getId() == v.getIdCategorie())
+						productsToPickUp += "- " + p.getNomProduit()+"\n";
+				
+				Log.d("#### ListProd ####", productsToPickUp.toString());
+				
+				// 1. Instantiate an AlertDialog.Builder with its constructor
+				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+				// 2. Chain together various setter methods to set the dialog characteristics
+				builder.setTitle("Produit(s) à ramasser").setMessage(productsToPickUp)
+				 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	               @Override
+	               public void onClick(DialogInterface dialog, int id) {
+	                   dialog.cancel();
+	               }
+				 });
+				// 3. Get the AlertDialog from create()
+				AlertDialog dialog = builder.create();
+				
+				dialog.show();
 			}
 			
 		});
