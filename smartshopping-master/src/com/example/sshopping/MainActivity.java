@@ -166,6 +166,9 @@ public class MainActivity extends FragmentActivity {
 				
 				ArrayList<Integer> listCategorieID = new ArrayList<Integer>();
 
+				// clear la liste des produits établis, sinon doublons
+				MainActivity._smartListEtablished.clear();
+				
 				for(int i = 0, j = MainActivity.this._tableProduit.getChildCount(); i < j; i++){
 					// then, you can remove the the row you want...
 					// for instance...
