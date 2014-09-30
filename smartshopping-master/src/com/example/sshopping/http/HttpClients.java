@@ -43,6 +43,9 @@ public class HttpClients {
 			}
 			StringEntity se = new StringEntity(jsonForStringEntity.toString());
 			Log.i("HttpClient", jsonForStringEntity.toString());*/
+			if(parameters == null){
+				parameters = new ArrayList<NameValuePair>();
+			}
 			httpPostRequest.setEntity(new UrlEncodedFormEntity(parameters));
 			
 			long t = System.currentTimeMillis();
@@ -72,12 +75,13 @@ public class HttpClients {
 		{
 			
 			errorMessage = e.toString() == null ?"Null error msg":e.toString();
+			e.printStackTrace();
 		}
 		
 		try {
 			errorJSONobj.putOpt("error", errorMessage);
 
-			Log.i(TAG, errorMessage);
+			Log.i(TAG, "Error http:"+errorMessage);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.example.sshopping.R;
 import com.example.sshopping.http.OnDataReturnListener;
+import com.example.sshopping.views.ISlideMenuActivity;
 
 import SmartShopping.OV.OVCategorie;
 import SmartShopping.OV.OVListeProduit;
@@ -60,7 +61,7 @@ import android.widget.TextView;
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
 @SuppressLint("NewApi")
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ISlideMenuActivity {
 
 	public ActionBar 		actionBar;
 	public boolean 			menuOk 					= false;

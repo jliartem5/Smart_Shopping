@@ -35,6 +35,7 @@ public class OVProduit extends OVObject{
         }
         
     }
+   
     
     public OVProduit(int idProduit, String nomProduit, OVCategorie ovCategorie, double prix) {
         this.id = idProduit;
