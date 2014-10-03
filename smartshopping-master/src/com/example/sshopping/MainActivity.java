@@ -82,6 +82,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private Button _btnDelete;
 	private Button _speedShopping;
 
+	
 	@SuppressLint("NewApi")
 	@Override
 	/**
@@ -481,4 +482,5 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		}
 		return false;
 	}
+	
 }

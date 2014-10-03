@@ -111,6 +111,12 @@ public class OVPromotion extends OVObject{
    
     @Override
     public String toString(){
-    	return this.libellePromotion+" "+(this.promotion*100)+"%("+this.dateDebut+" to "+this.dateFin+")";
+    	String promoTxt = "";
+    	if(this.ovTypePromotion.getLibelleTypePromotion().toUpperCase() == "REMISE_EURO"){
+    		promoTxt = this.libellePromotion + "\n"+(this.promotion*100)+"%";
+    	}else{
+    		promoTxt = this.libellePromotion;
+    	}
+    	return promoTxt;
     }
 }

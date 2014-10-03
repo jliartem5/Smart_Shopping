@@ -9,6 +9,11 @@ import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.widget.Toast;
+
+import com.example.sshopping.SmartShoppingApplication;
 import com.example.sshopping.http.AsynJsonHttp;
 import com.example.sshopping.http.HttpClients;
 import com.example.sshopping.http.OnDataReturnListener;
@@ -45,10 +50,15 @@ public class WebServer {
 	
 	@SuppressWarnings("unchecked")
 	public void sendRequest(COMMANDE cmd, List<NameValuePair> request, OnDataReturnListener dataListener){
-		String finalURL = this.webBaseUrl + cmd.toString()+".jsp";
-		AsynJsonHttp asynHttp = new AsynJsonHttp(finalURL, null);
-		asynHttp.setOnReturnDataListener(dataListener);
-		asynHttp.execute(request);
+		ConnectivityManager connectivityManager = (ConnectivityManager) SmartShoppingApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		if(connectivityManager.getActiveNetworkInfo().isAvailable()){
+			String finalURL = this.webBaseUrl + cmd.toString()+".jsp";
+			AsynJsonHttp asynHttp = new AsynJsonHttp(finalURL, null);
+			asynHttp.setOnReturnDataListener(dataListener);
+			asynHttp.execute(request);
+		}else{
+			Toast.makeText(SmartShoppingApplication.getAppContext(), "Internet indisponible", 1000).show();
+		}
 	}
 	
 }
