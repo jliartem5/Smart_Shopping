@@ -65,7 +65,8 @@ public class HttpClients {
 				String resultString= convertStreamToString(instream);
 				Log.i(TAG,"<JSONObject>\n"+resultString+"\n</JSONObject>");
 				instream.close();
-				resultString = resultString.substring(0,resultString.length()-1); 
+			
+				resultString = new String(resultString.substring(0,resultString.length()-1).getBytes(), "utf-8"); 
 				JSONObject jsonObjRecv = new JSONObject(resultString);
 				return jsonObjRecv;
 			}

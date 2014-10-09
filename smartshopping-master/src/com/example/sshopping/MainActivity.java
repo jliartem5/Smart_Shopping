@@ -396,6 +396,12 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		return MainActivity._smartListEtablished;
 	}
 	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		return false;
+	   // super.onPrepareOptionsMenu(menu);
+	}
+	
 	public boolean AddProduitRowLineView(OVListeProduit prodToShow){
 
 		OVProduit clickedProduit = this.getProduitById(prodToShow.getIdProduit());
