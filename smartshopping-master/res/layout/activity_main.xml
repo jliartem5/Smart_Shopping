@@ -41,27 +41,21 @@
 				        android:text="" />
 			</LinearLayout>
 		
-		     <ScrollView
-		        android:id="@+id/ScrollView11"
-		        android:layout_width="match_parent"
-		        android:layout_height="350dp"
-		        android:layout_below = "@id/ll_autocomplete"
-		        android:fillViewport="false" >
-		
-			    <TableLayout
-			        android:id="@+id/table_produit"
-			        android:stretchColumns="0,1,2"
+			    <ListView
+			        android:id="@+id/main_produit_list"
 			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content" >
-				</TableLayout>
-			</ScrollView>
+			        android:layout_height="370dip"
+		       		android:layout_below = "@id/ll_autocomplete"
+			         >
+				</ListView>
 
 		    <Button
 		        android:id="@+id/btn_spped_shopping"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/ScrollView11"
+		        android:layout_below="@+id/main_produit_list"
+		        style="@style/btnStyleOrange"
 		        android:text="SpeedShopping" />
 
 		    <Button
@@ -70,7 +64,8 @@
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentLeft="true"
 		        android:layout_below="@+id/btn_spped_shopping"
-		        android:layout_marginTop="14dp"
+		        android:layout_marginTop="5dp"
+		        style="@style/btnStyleOrange"
 		        android:text="Supprimer les produits cochés" />
             
         </RelativeLayout>

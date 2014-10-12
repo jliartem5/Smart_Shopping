@@ -69,7 +69,7 @@ public class SmartPlanTouchListener implements OnTouchListener {
 						"Not much move:" + Math.abs(this.margin_counter)
 								+ ", solved as click");
 				Map<Vertex, int[]> markersPositions = this.view.getMarkersPositions();
-				
+				boolean touchedOnTheMarker = false;
 				if(markersPositions != null){
 					for(Vertex key : markersPositions.keySet()){
 						int[] leftTop = markersPositions.get(key);
@@ -77,14 +77,16 @@ public class SmartPlanTouchListener implements OnTouchListener {
 						if(rct.contains(userX, userY)){
 							if(this.onMarkerClick != null){
 								this.onMarkerClick.OnMarkerClick(key, leftTop);
+								
 							}
+							touchedOnTheMarker = true;
 							break;
 						}
 					}
 				}
-				/*if(this.view.isReadOnly() == false){
+				if(touchedOnTheMarker == false){
 					this.view.ShowPopupWindow();
-				}*/
+				}
 			}
 
 			this.margin_counter = 0;

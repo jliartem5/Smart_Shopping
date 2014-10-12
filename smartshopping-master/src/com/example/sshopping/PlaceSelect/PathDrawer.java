@@ -73,12 +73,8 @@ public class PathDrawer {
 				);
 		
 		Point mapImgOffset = this._v.getPlanOffset();
-		/*for(int i = 0;i<this.smartMap.getMapSize().y + this.smartMap.getMapSize().y/2;++i){
-			canvas.drawLine(0 + mapImgOffset.x , oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, canvas.getWidth(), oneCaseSize.y + mapImgOffset.y + i * oneCaseSize.y, new Paint());
-		}
-		for(int i = 0;i<this.smartMap.getMapSize().x + this.smartMap.getMapSize().x/2;++i){
-			canvas.drawLine(oneCaseSize.x + mapImgOffset.x + i * oneCaseSize.x, 0 + mapImgOffset.y, i*oneCaseSize.x + oneCaseSize.x + mapImgOffset.x, canvas.getHeight(), new Paint());
-		}*/
+		
+		int totalMarkerCount = 0;
 		for(int i=0; i<path.size();++i){
 			Vertex v = path.get(i);
 			Point mapDrawPosition  = this.CalculMapDrawNormalizedPosition(v.mapPosition);
@@ -111,16 +107,24 @@ public class PathDrawer {
 				}
 			}
 			if(v.getMarker()){// si c'est un sommet avec une categorie à rammasser, on place un marker
+				totalMarkerCount++;
 				markersTmpPosition.put(v, new int[]{startX + mapImgOffset.x - (this.marker.getWidth()/2), startY + mapImgOffset.y- (this.marker.getHeight()/2)-20});
 			}
 		}
 		canvas.drawPath(drawPath, paint);
 		canvas.drawBitmap(from, fromLeft, fromTop, paint);
-		canvas.drawBitmap(to, toLeft, toTop, paint);
-		
+		/*if(totalMarkerCount==1){//Minimum 2 categorie pr afficher drapeau
+			canvas.drawBitmap(to, toLeft, toTop, paint);
+		}
+		*/
 		
 		for(Vertex key : markersTmpPosition.keySet()){
-			canvas.drawBitmap(this.marker, markersTmpPosition.get(key)[0], markersTmpPosition.get(key)[1], paint);
+			Bitmap imgToDraw = this.marker;
+			if(totalMarkerCount == 1){//Si y'a qu'un seul categorie alors on dessine seulement le drapeau
+				imgToDraw = to;
+			}
+			
+			canvas.drawBitmap(imgToDraw, markersTmpPosition.get(key)[0], markersTmpPosition.get(key)[1], paint);
 		}
 		this._v.setMarkersPositions(markersTmpPosition);
 	}

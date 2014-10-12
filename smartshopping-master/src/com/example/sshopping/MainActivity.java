@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.sshopping.R;
+import com.example.sshopping.adapter.MainListProduitAdapter;
 import com.example.sshopping.http.OnDataReturnListener;
 import com.example.sshopping.views.ISlideMenuActivity;
 
@@ -51,6 +52,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -70,18 +72,17 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private List<OVProduit> _allProduits = new ArrayList<OVProduit>();
 	private List<OVListeProduit> _myListeProduit = new ArrayList<OVListeProduit>();
 	
-	private static List<OVSommet> _allSommets = null;
+	public static List<OVSommet> _allSommets = null;
 	private static List<OVProduit> _smartListEtablished = new ArrayList<OVProduit>();
 	
 	private OVSmartList _mySmartList;
-	
+	private MainListProduitAdapter adapter;
 	private FragmentManager	_fm;
 	private DrawerLayout	_drawerLayout;
 	private AutoCompleteTextView _autocomleteView;
-	private TableLayout _tableProduit;
+	private ListView _listview_produit;
 	private Button _btnDelete;
 	private Button _speedShopping;
-
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -95,45 +96,36 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		this._drawerLayout = (DrawerLayout) findViewById(R.id.main_container);
 
 		this.actionBar = getActionBar();
-
 		this.actionBar.setDisplayShowTitleEnabled(false);
 		this.actionBar.setDisplayHomeAsUpEnabled(false);
 		this.actionBar.setDisplayShowCustomEnabled(true);
 		MainActivity.this._autocomleteView =  (AutoCompleteTextView)MainActivity.this.findViewById(R.id.autocomplet_produit);
-		
+		this._listview_produit = (ListView)MainActivity.this.findViewById(R.id.main_produit_list);
 
 		this._fm = getSupportFragmentManager();
-		/*String str = "{\"id\":1,\"nom\":\"mySmartListe\",\"produitsSmartList\":[{\"id\":1,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":5},{\"id\":4,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":16},{\"id\":5,\"idListe\":1,\"coche\":true,\"supprime\":true,\"idProduit\":8},{\"id\":12,\"idListe\":1,\"coche\":true,\"supprime\":true,\"idProduit\":3},{\"id\":28,\"idListe\":1,\"coche\":false,\"supprime\":false,\"idProduit\":3}]}";
-		OVSmartList ovsl = new OVSmartList(str);
-		try {
-			Log.i("HttpClient", ovsl.toJSON().toString());
-		} catch (JSONException e1) {
-			Log.e("HttpCLient", e1.getMessage());
-			e1.printStackTrace();
-		}*/
 		
 		this._btnDelete = (Button)this.findViewById(R.id.btn_supprime_prod);
 		this._btnDelete.setOnClickListener(new OnClickListener(){
 
-			List<View> listViewToDelete = new ArrayList<View>();
 			@Override
 			public void onClick(View arg0) {
 				
 				List<OVListeProduit> listeCompletToUpdate = new ArrayList<OVListeProduit>();
 
-				for(int i = 0, j = MainActivity.this._tableProduit.getChildCount(); i < j; i++){
+				for(int i = 0, j = MainActivity.this._listview_produit.getChildCount(); i < j; i++){
 					// then, you can remove the the row you want...
 					// for instance...
-					TableRow row = (TableRow) MainActivity.this._tableProduit.getChildAt(i);
+					View row = (View) MainActivity.this._listview_produit.getChildAt(i);
 
-					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
-					OVListeProduit oneListeProduit = (OVListeProduit) row.getChildAt(0).getTag();
+					boolean isCheckboxChecked = ((CheckBox)row.findViewById(R.id.list_produit_row_checked)).isChecked();
+					OVListeProduit oneListeProduit = (OVListeProduit) row.findViewById(R.id.list_produit_row_checked).getTag();
 					oneListeProduit.setCoche(isCheckboxChecked);
 					oneListeProduit.setSupprime(isCheckboxChecked);
+					
 					listeCompletToUpdate.add(oneListeProduit);
 					
 					if(isCheckboxChecked) {
-						listViewToDelete.add(MainActivity.this._tableProduit.getChildAt(i));
+						MainActivity.this._mySmartList.getProduitsSmartList().remove(oneListeProduit);
 					}
 				}
 				
@@ -148,10 +140,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 					@Override
 					public void OnDataReturn(JSONObject jobj) {
 						// TODO Auto-generated method stub
-
-							for(View v : listViewToDelete){
-								MainActivity.this._tableProduit.removeView(v);
-							}
+						MainActivity.this.adapter.notifyDataSetChanged();
 					}
 					
 				});
@@ -171,13 +160,13 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 				// clear la liste des produits établis, sinon doublons
 				MainActivity._smartListEtablished.clear();
 				
-				for(int i = 0, j = MainActivity.this._tableProduit.getChildCount(); i < j; i++){
+				for(int i = 0, j = MainActivity.this._listview_produit.getChildCount(); i < j; i++){
 					// then, you can remove the the row you want...
 					// for instance...
-					TableRow row = (TableRow) MainActivity.this._tableProduit.getChildAt(i);
+					View row = (View) MainActivity.this._listview_produit.getChildAt(i);
 
-					boolean isCheckboxChecked = ((CheckBox)row.getChildAt(0)).isChecked();
-					OVProduit oneProd = (OVProduit) row.getChildAt(1).getTag();
+					boolean isCheckboxChecked = ((CheckBox)row.findViewById(R.id.list_produit_row_checked)).isChecked();
+					OVProduit oneProd = (OVProduit) row.findViewById(R.id.list_produit_row_btnGO).getTag();
 					MainActivity._smartListEtablished.add(oneProd);
 					if(/*!isCheckboxChecked && */listCategorieID.contains(oneProd.getOvCategorie().getId()) == false){
 						listCategorieID.add(oneProd.getOvCategorie().getId());
@@ -235,22 +224,13 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 							public void OnDataReturn(JSONObject jobj) {
 								MainActivity.this._mySmartList = new RepSmartList(jobj.toString()).getSmartList();
 								MainActivity.this._mySmartList.setId(1);
-
-								for(OVListeProduit prodToShow : MainActivity.this._mySmartList.getProduitsSmartList()){
-									
-									if(prodToShow.getSupprime() == true){
-										continue;
-									}
-									
-									MainActivity.this.AddProduitRowLineView(prodToShow);
-								}
+								MainActivity.this.adapter = new MainListProduitAdapter(MainActivity.this, _allProduits, MainActivity.this._mySmartList.getProduitsSmartList());
+								MainActivity.this._listview_produit.setAdapter(adapter);
+								
 							}
 							
 						});
 		
-
-		
-		this._tableProduit = (TableLayout)this.findViewById(R.id.table_produit);
 		this._autocomleteView.setOnItemClickListener(new OnItemClickListener(){
 			OVListeProduit produitToAdd;
 			@Override
@@ -280,7 +260,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 							 try {
 								int newLstProduitID = jobj.getInt("idListeProduit");
 								produitToAdd.setId(newLstProduitID);
-								MainActivity.this.AddProduitRowLineView(produitToAdd);
+								MainActivity.this._mySmartList.getProduitsSmartList().add(produitToAdd);
+								MainActivity.this.adapter.notifyDataSetChanged();
 								MainActivity.this._autocomleteView.setText("");
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -378,7 +359,6 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		Log.i("LJ", "Open slide menu");
 	}
 
-
 	public OVProduit getProduitById(int id){
 		for(OVProduit prd : this._allProduits){
 			if(prd.getId() == id){
@@ -400,93 +380,6 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		return false;
 	   // super.onPrepareOptionsMenu(menu);
-	}
-	
-	public boolean AddProduitRowLineView(OVListeProduit prodToShow){
-
-		OVProduit clickedProduit = this.getProduitById(prodToShow.getIdProduit());
-		if(clickedProduit != null){
-
-			// Creation row
-			final TableRow tableRow = new TableRow(MainActivity.this);      
-			tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-
-			//Creation Checkbox
-			final CheckBox checkbox = new CheckBox(MainActivity.this);
-			checkbox.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-			checkbox.setTag(prodToShow);
-			checkbox.setChecked(prodToShow.getCoche());
-			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-
-				@Override
-				public void onCheckedChanged(CompoundButton arg0,
-						boolean arg1) 
-					{
-					
-					//On desactive la view jusau'au retour de serveur
-					checkbox.setEnabled(false);
-
-					OVListeProduit objToUpdate = (OVListeProduit) arg0.getTag();
-					objToUpdate.setCoche(arg1);
-					ReqListeProduit requestObj = new ReqListeProduit();
-					requestObj.setOvListeProduit(objToUpdate);
-					requestObj.requestUpdateListeProduit(new OnDataReturnListener(){
-
-						@Override
-						public void OnDataReturn(JSONObject jobj) {
-							checkbox.setEnabled(true);//On réactive la view
-						}
-						
-					});
-					
-				}
-				
-			});
-
-			// Creation textView
-			final TextView text = new TextView(MainActivity.this);
-			text.setTextSize(15);
-			text.setTag(clickedProduit);
-			text.setText(clickedProduit.getNomProduit() + "    " + clickedProduit.getPrix() + "€");
-			text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-			// Creation  button
-			final Button btnGo = new Button(MainActivity.this);
-			btnGo.setText("GO");
-			btnGo.setTextSize(20);
-			btnGo.setTextColor(Color.WHITE);
-			btnGo.setBackgroundColor(Color.BLUE);
-			btnGo.setTag(clickedProduit);
-			TableRow.LayoutParams p =new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-			p.gravity = Gravity.RIGHT;
-			btnGo.setLayoutParams(p);
-			btnGo.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-					if(MainActivity._allSommets != null){
-						OVProduit prod = (OVProduit)arg0.getTag();
-						int idCat = prod.getOvCategorie().getId();
-						Intent switchToPlanActivity = new Intent( MainActivity.this, SmartPlanActivity.class);
-						switchToPlanActivity.putExtra("idCategorie", idCat);
-						startActivity(switchToPlanActivity);
-					}else{
-						//Alert?
-					}
-				}
-				
-			});
-
-			//btnActiver.setOnClickListener(handler_btnActiver);
-			tableRow.addView(checkbox);
-			tableRow.addView(text);
-			tableRow.addView(btnGo);
-
-			MainActivity.this._tableProduit.addView(tableRow);
-			return true;
-		}
-		return false;
 	}
 	
 }

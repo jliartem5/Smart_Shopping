@@ -13,7 +13,6 @@ import SmartShopping.ShortestPath.Dijkstra;
 import SmartShopping.ShortestPath.SmartMap;
 import SmartShopping.ShortestPath.Vertex;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;

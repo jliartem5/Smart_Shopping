@@ -19,10 +19,10 @@ public class PlaceSelectPopupWindow extends PopupWindow{
 		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(com.example.sshopping.R.layout.select_place_popupwindow, null);
 		this.setContentView(view);
-		ColorDrawable dw = new ColorDrawable(0xb0AAAAAA);
+		ColorDrawable dw = new ColorDrawable(0xD0AAAAAA);
 		this.setBackgroundDrawable(dw);
 		
-		btn =(Button) view.findViewById(R.id.btn_take_place);
+		btn =(Button) view.findViewById(R.id.btn_se_localiser);
 		btn.setTextColor(0xEEDDDDDD);
 		
 		
