@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,8 +115,8 @@ public class MainListProduitAdapter extends BaseAdapter{
 
 			// Creation textView
 			final TextView text = (TextView) converter.findViewById(com.example.sshopping.R.id.list_produit_row_description);
-			text.setTextSize(15);
 			text.setTag(clickedProduit);
+			Typeface font = Typeface.createFromAsset(context.getAssets(), "calibriLight.ttf");
 			text.setText(clickedProduit.getNomProduit() + "    " + clickedProduit.getPrix() + "€");
 			
 			// Creation  button

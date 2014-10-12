@@ -65,7 +65,7 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 			TextView tv = new TextView(this);
 			tv.setText(promo.toString());
 			
-			final Button qrButton = new Button(this);
+			final Button qrButton  = new Button(this);
 			qrButton.setText("QR");
 			qrButton.setTag(promo);
 			qrButton.setOnClickListener(new OnClickListener(){

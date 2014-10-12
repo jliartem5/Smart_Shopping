@@ -46,6 +46,8 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="370dip"
 		       		android:layout_below = "@id/ll_autocomplete"
+		       		android:divider="@drawable/custom_list_divider"
+		       		android:dividerHeight="1dp"
 			         >
 				</ListView>
 
@@ -55,7 +57,7 @@
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentLeft="true"
 		        android:layout_below="@+id/main_produit_list"
-		        style="@style/btnStyleOrange"
+		        style="@style/btnStyleShakespeare"
 		        android:text="SpeedShopping" />
 
 		    <Button

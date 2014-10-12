@@ -13,7 +13,8 @@
 	<TextView 
 	    android:layout_height="wrap_content"
 	    android:layout_width = "wrap_content"
-	    android:textSize="15sp"
+	    android:textSize="16sp"
+	    android:gravity="center"
 	    android:id="@+id/list_produit_row_description"
 	    android:layout_toRightOf="@id/list_produit_row_checked"
 	    />
