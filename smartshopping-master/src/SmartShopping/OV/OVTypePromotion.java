@@ -26,5 +26,4 @@ public class OVTypePromotion extends OVObject{
     public void setLibelleTypePromotion(String libelleTypePromotion) {
         this.libelleTypePromotion = libelleTypePromotion;
     }
-    
 }
