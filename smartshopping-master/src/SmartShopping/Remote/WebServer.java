@@ -25,11 +25,11 @@ public class WebServer {
 	
 	
 	public enum COMMANDE {
-		TousLesProduits, AjouterProduit,
+		TousLesProduits, AjouterProduit, 
 		GetSmartList, UpdateListeProduit,
-		AddListeProduit,postParam,
+		AddListeProduit, postParam,
 		UpdateSmartList, TousLesSommets,
-		ToutesLesPromotions
+		ToutesLesPromotions, NotificationTexte
 	};
 	
 	// Design Pattern Singleton
@@ -38,7 +38,7 @@ public class WebServer {
 	private final String webBaseUrl = "http://smartshopping.no-ip.org:8080/smartshopping/";
 	
 	private WebServer(){
-		// constructer privé
+		// constructer prive
 	}
 	
 	public static WebServer getInstance(){
