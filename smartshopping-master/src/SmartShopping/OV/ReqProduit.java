@@ -40,7 +40,7 @@ public class ReqProduit extends OVReq {
 	
 	public boolean requestAjoutProduit(OnDataReturnListener dataListener){
 		WebServer ws = WebServer.getInstance();		
-		// this contient le produit à ajouter
+		// this contient le produit a ajouter
 		ws.sendRequest(WebServer.COMMANDE.AjouterProduit, new ArrayList<NameValuePair>(), dataListener); 
 		return true;
 	}

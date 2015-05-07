@@ -70,7 +70,7 @@ public class OVProduit extends OVObject{
     
     @Override
     public String toString(){
-    	return this.nomProduit + "\t" + this.prix + " €";
+    	return this.nomProduit + "\t" + this.prix + " ?";
     }
     
 }
