@@ -17,11 +17,11 @@ public class OVNotification extends OVObject {
     private OVPromotion ovPromotion;
     private OVBeacon ovBeacon;
     private int distance;
-    private boolean responseNeeded;
+    private int responseNeeded;
     private String texte;
 
     
-    public OVNotification(int idNotification, int distance, boolean responseNeeded, String texte) {
+    public OVNotification(int idNotification, int distance, int responseNeeded, String texte) {
         this.id = idNotification;
         this.distance = distance;
         this.responseNeeded = responseNeeded;
@@ -38,7 +38,7 @@ public class OVNotification extends OVObject {
             
             this.setDistance(object.getInt("distance"));
             this.setId(object.getInt("id"));
-            this.setResponseNeeded(object.getBoolean("responseNeeded"));
+            this.setResponseNeeded(object.getInt("responseNeeded"));
             this.setTexte("texte");
         } 
         catch (JSONException ex)
@@ -72,11 +72,11 @@ public class OVNotification extends OVObject {
         this.distance = distance;
     }
 
-    public boolean isResponseNeeded() {
+    public int isResponseNeeded() {
         return responseNeeded;
     }
 
-    public void setResponseNeeded(boolean responseNeeded) {
+    public void setResponseNeeded(int responseNeeded) {
         this.responseNeeded = responseNeeded;
     }
 

@@ -10,6 +10,7 @@ import com.example.sshopping.R;
 import com.example.sshopping.adapter.MainListProduitAdapter;
 import com.example.sshopping.http.OnDataReturnListener;
 import com.example.sshopping.notification.ButtonNotification;
+import com.example.sshopping.notification.Notification;
 import com.example.sshopping.notification.SimpleNotification;
 import com.example.sshopping.views.ISlideMenuActivity;
 
@@ -22,11 +23,27 @@ import SmartShopping.OV.RepListeProduit;
 import SmartShopping.OV.RepProduit;
 import SmartShopping.OV.RepSmartList;
 import SmartShopping.OV.RepSommet;
+import SmartShopping.OV.RepNotification;
 import SmartShopping.OV.ReqListeProduit;
 import SmartShopping.OV.ReqNotification;
 import SmartShopping.OV.ReqProduit;
 import SmartShopping.OV.ReqSmartList;
 import SmartShopping.OV.ReqSommet;
+
+
+// SmartBeacon imports
+import eu.smartbeacon.sdk.core.SBBeacon;
+import eu.smartbeacon.sdk.core.SBLocationManager;
+import eu.smartbeacon.sdk.core.SBLocationManagerListener;
+import eu.smartbeacon.sdk.core.SBRegion;
+import eu.smartbeacon.sdk.core.SBScanDeviceListener;
+import eu.smartbeacon.sdk.core.SBLocationManager.Frequency;
+import eu.smartbeacon.sdk.utils.SBLogger;
+
+// other imports
+import android.app.Activity;
+import android.os.Bundle;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -38,6 +55,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -60,6 +79,7 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Classe principale, qui permet de gerer l'application.
@@ -67,7 +87,7 @@ import android.widget.TextView;
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
 @SuppressLint("NewApi")
-public class MainActivity extends FragmentActivity implements ISlideMenuActivity {
+public class MainActivity extends FragmentActivity implements ISlideMenuActivity, SBLocationManagerListener {
 
 	public ActionBar 		actionBar;
 	public boolean 			menuOk 					= false;
@@ -87,7 +107,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private ListView _listview_produit;
 	private Button _btnDelete;
 	private Button _speedShopping;
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	/**
@@ -397,11 +417,92 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	public static List<OVProduit> getSmartListEtablished(){
 		return MainActivity._smartListEtablished;
 	}
-	
+
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		return false;
-	   // super.onPrepareOptionsMenu(menu);
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+
+		// enable logging message
+		SBLogger.setSilentMode(false);
+
+		// get shared instance of SBLocationManager
+		SBLocationManager sbManager = SBLocationManager.getInstance(this);
+
+		// add SmartBeacon region
+		sbManager.addEntireSBRegion();
+
+		// register for beacon location update
+		sbManager.addBeaconLocationListener(this);
+
+		// you can also change update frequency (update between each update)
+		// available values: Frequency.HIGH (eq. 1 sec), Frequency.DEFAULT (eq. 3 sec) and Frequency.LOW (eq. 5 sec)
+		//
+		// by default, value is Frequency.DEFAULT
+		// sbManager.setUpdateFrequency(Frequency.DEFAULT);
+
+		// start monitoring and ranging beacons
+		sbManager.startMonitoringAllBeaconRegions();
 	}
-	
+
+	@Override
+	protected void onDestroy() {
+		// stop monitoring and ranging beacons
+		SBLocationManager.getInstance(this)
+				.stopMonitoringAllBeaconRegions();
+
+		super.onDestroy();
+	}
+
+	//
+	// these three methods will be called after waiting delay defined by frequency value.
+	//
+	// called when app enters in range of beacons list
+	@Override
+	public void onEnteredBeacons(List<SBBeacon> beacons) {
+		SBLogger.d("we enter into " + beacons.size() + " beacons!");
+	}
+
+	// called when app exits in range of beacons list
+	@Override
+	public void onExitedBeacons(List<SBBeacon> beacons) {
+		SBLogger.d("we leave " + beacons.size() + " beacons!");
+	}
+
+	// called when app is in range of beacons list
+	@Override
+	public void onDiscoveredBeacons(List<SBBeacon> beacons) {
+		SBLogger.d("we discover " + beacons.size() + " beacons!");
+	}
+
+	@Override
+	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
+		int major = beacon.getMajor();
+		int distance = toProximity.getValue();
+
+		// requete notification
+		ReqNotification reqNotification = new ReqNotification();
+		reqNotification.setMajor(major);
+		reqNotification.setDistance(distance);
+
+		reqNotification.requestNotifications(new OnDataReturnListener() {
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				RepNotification repN = new RepNotification();
+
+				Log.v("BEACON", jobj.toString());
+
+				try {
+					String jsonStr = jobj.toString();
+					JSONObject object;
+					object = new JSONObject(jsonStr);
+					SimpleNotification notif = new SimpleNotification(MainActivity.this);
+					notif.Show("Notification : " + object.getJSONArray("listeNotification").getJSONObject(0).getString("texte"));
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+	}
 }

@@ -29,7 +29,7 @@ public class WebServer {
 		GetSmartList, UpdateListeProduit,
 		AddListeProduit, postParam,
 		UpdateSmartList, TousLesSommets,
-		ToutesLesPromotions, NotificationTexte
+		ToutesLesPromotions, Notification
 	};
 	
 	// Design Pattern Singleton

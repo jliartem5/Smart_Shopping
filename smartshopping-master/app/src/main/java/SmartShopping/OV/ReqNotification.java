@@ -24,6 +24,8 @@ public class ReqNotification extends OVReq {
  
     
     private OVNotification ovNotification;
+    private int major;
+    private int distance;
 
     public OVNotification getOvNotification() {
 
@@ -39,10 +41,16 @@ public class ReqNotification extends OVReq {
         WebServer ws = WebServer.getInstance();
         try {
             List<NameValuePair> nvp = new ArrayList<NameValuePair>();
-            OVNotification notification = new OVNotification(1, 1, false, "-");
 
-            nvp.add(new BasicNameValuePair("NotificationTexte",notification.toJSON().toString()));
-            ws.sendRequest(WebServer.COMMANDE.NotificationTexte, nvp, dataListener);
+            //OVNotification notification = new OVNotification(1, this.distance, 0, "-");
+            //notification.getOvBeacon().setMajor(this.major);
+
+            //Test beacon fictif
+            OVNotification notification = new OVNotification(1, 1, 0, "-");
+            notification.getOvBeacon().setMajor(2);
+
+            nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
+            ws.sendRequest(WebServer.COMMANDE.Notification, nvp, dataListener);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -50,4 +58,19 @@ public class ReqNotification extends OVReq {
         return true;
     }
 
+    public int getMajor() {
+        return major;
+    }
+
+    public void setMajor(int major) {
+        this.major = major;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 }

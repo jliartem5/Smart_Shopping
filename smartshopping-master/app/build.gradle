@@ -22,4 +22,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile files('libs/zxing-2.1.jar')
+    compile files('libs/json-simple-1.1.1.jar')
+    compile files('libs/smartbeaconsdk.jar')
 }

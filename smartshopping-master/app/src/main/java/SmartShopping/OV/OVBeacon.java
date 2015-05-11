@@ -11,14 +11,14 @@ package SmartShopping.OV;
  */
 public class OVBeacon extends OVObject {
     private String uuid;
-    private String major;
-    private String minor;
+    private int major;
+    private int minor;
 
     public OVBeacon(){
         this.id = 1;
         this.uuid = "test";
-        this.major = "2";
-        this.minor = "1";
+        this.major = 2;
+        this.minor = 1;
     }
 
     @Override
@@ -38,19 +38,19 @@ public class OVBeacon extends OVObject {
         this.uuid = uuid;
     }
 
-    public String getMajor() {
+    public int getMajor() {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setMajor(int major) {
         this.major = major;
     }
 
-    public String getMinor() {
+    public int getMinor() {
         return minor;
     }
 
-    public void setMinor(String minor) {
+    public void setMinor(int minor) {
         this.minor = minor;
     }
     
