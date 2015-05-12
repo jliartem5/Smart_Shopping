@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 public class RepSommet extends OVRep {
 
-    private ArrayList<OVSommet> listeSommet; 
+    private ArrayList<OVSommet> listeSommet= new ArrayList<OVSommet>();
 
     public RepSommet(){
         this.listeSommet = new ArrayList<OVSommet>();
