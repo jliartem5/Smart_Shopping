@@ -5,29 +5,52 @@
  */
 package SmartShopping.OV;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  *
  * @author TheNabo1
  */
 public class OVBeacon extends OVObject {
+
+    private Integer idBeacon;
     private String uuid;
     private int major;
     private int minor;
 
-    public OVBeacon(){
-        this.id = 1;
-        this.uuid = "test";
-        this.major = 2;
-        this.minor = 1;
+    public OVBeacon(String jsonStr) {
+
+        try {
+            JSONObject object;
+            object = new JSONObject(jsonStr);
+
+            this.uuid = object.getString("uuid");
+            this.major = object.getInt("major");
+            this.minor = object.getInt("minor");
+            this.idBeacon = object.getInt("id");
+        } catch (JSONException ex) {
+        }
+    }
+    
+    public OVBeacon() {
+        
     }
 
+    public OVBeacon(Integer idBeacon, String uuid, int major, int minor) {
+        this.idBeacon = idBeacon;
+        this.uuid = uuid;
+        this.major = major;
+        this.minor = minor;
+    }
+    
     @Override
     public Integer getId() {
-        return id;
+        return idBeacon;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.idBeacon = id;
     }
 
     public String getUuid() {
@@ -53,7 +76,5 @@ public class OVBeacon extends OVObject {
     public void setMinor(int minor) {
         this.minor = minor;
     }
-    
-    
-    
+
 }

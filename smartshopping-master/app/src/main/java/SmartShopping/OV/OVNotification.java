@@ -19,8 +19,24 @@ public class OVNotification extends OVObject {
     private int distance;
     private int responseNeeded;
     private String texte;
+    private OVReponse reponseEnvoye;
 
-    
+    public OVNotification(String jsonStr) {
+
+        try {
+            JSONObject object;
+            object = new JSONObject(jsonStr);
+
+            this.distance = object.getInt("distance");
+            this.id = object.getInt("id");
+            this.responseNeeded = object.getInt("responseNeeded");
+            this.texte = "texte";
+            this.ovBeacon = new OVBeacon(object.getJSONObject("ovBeacon").toString());
+            this.reponseEnvoye = new OVReponse(object.getJSONObject("reponseEnvoye").toString());
+        } catch (JSONException ex) {
+        }
+    }
+
     public OVNotification(int idNotification, int distance, int responseNeeded, String texte) {
         this.id = idNotification;
         this.distance = distance;
@@ -28,25 +44,6 @@ public class OVNotification extends OVObject {
         this.texte = texte;
         this.ovBeacon = new OVBeacon();
     }
-    
-    public OVNotification(String jsonStr){
-
-        try 
-        {
-            JSONObject object;
-            object = new JSONObject(jsonStr);
-            
-            this.setDistance(object.getInt("distance"));
-            this.setId(object.getInt("id"));
-            this.setResponseNeeded(object.getInt("responseNeeded"));
-            this.setTexte("texte");
-        } 
-        catch (JSONException ex)
-        {
-        }
-	}
-
-
 
     public OVPromotion getOvPromotion() {
         return ovPromotion;
@@ -88,6 +85,14 @@ public class OVNotification extends OVObject {
         this.texte = texte;
     }
 
-    
-    
+    public OVReponse getReponseEnvoye() {
+        return reponseEnvoye;
+    }
+
+    public void setReponseEnvoye(OVReponse reponseEnvoye) {
+        this.reponseEnvoye = reponseEnvoye;
+    }
+    public int getResponseNeeded(){
+        return this.responseNeeded;
+    }
 }

@@ -15,4 +15,8 @@ public abstract class Notification {
 
         this.builder = new AlertDialog.Builder(this.activity);
     }
+
+    public void Show(){
+        this.builder.show();
+    }
 }

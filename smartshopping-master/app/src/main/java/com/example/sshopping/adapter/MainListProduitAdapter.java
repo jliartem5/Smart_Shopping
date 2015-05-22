@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,11 @@ public class MainListProduitAdapter extends BaseAdapter{
 	private Context context;
 	private LayoutInflater inflater;
 	public MainListProduitAdapter(Context context, List<OVProduit> produits, List<OVListeProduit> sl){
+		if(sl == null ){
+			Log.e("ERROR", "OVListeProduit is null");
+		}if(produits == null ){
+			Log.e("ERROR", "OVProduit is null");
+		}
 		this.smartList = sl;
 		this.allProduits = produits;
 		this.context = context;

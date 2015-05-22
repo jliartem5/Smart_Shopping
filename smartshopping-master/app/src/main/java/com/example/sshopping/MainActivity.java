@@ -3,6 +3,7 @@ package com.example.sshopping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,11 +12,13 @@ import com.example.sshopping.adapter.MainListProduitAdapter;
 import com.example.sshopping.http.OnDataReturnListener;
 import com.example.sshopping.notification.ButtonNotification;
 import com.example.sshopping.notification.Notification;
+import com.example.sshopping.notification.NotificationFactory;
 import com.example.sshopping.notification.SimpleNotification;
 import com.example.sshopping.views.ISlideMenuActivity;
 
 import SmartShopping.OV.OVCategorie;
 import SmartShopping.OV.OVListeProduit;
+import SmartShopping.OV.OVNotification;
 import SmartShopping.OV.OVProduit;
 import SmartShopping.OV.OVSmartList;
 import SmartShopping.OV.OVSommet;
@@ -309,22 +312,30 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		this._fm = getSupportFragmentManager();
 		this.switchFragment(new EmptyFragment());
 
-		/*SimpleNotification sn = new SimpleNotification(this);
-		ButtonNotification bn = new ButtonNotification(this);
-		bn.AddButton("CLOSE", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				
-			}
-		});
+
+
+
+
 
 		ReqNotification reqNotification = new ReqNotification();
 		reqNotification.requestNotifications(new OnDataReturnListener() {
 			@Override
 			public void OnDataReturn(JSONObject jobj) {
 				Log.i("Notification LOG", jobj.toString());
+				try {
+					JSONArray jsonA = jobj.getJSONArray("listeNotification");
+					if(jsonA.length() > 0) {
+						OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premier notification
+						Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
+
+					}else{//il n'y a aucune notification
+
+					}
+				}catch (Exception e){
+					Log.e("Notification LOG", e.toString());
+				}
 			}
-		});*/
+		});
 	}
 
 
@@ -491,16 +502,19 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 				Log.v("BEACON", jobj.toString());
 
-				try {
-					String jsonStr = jobj.toString();
-					JSONObject object;
-					object = new JSONObject(jsonStr);
-					SimpleNotification notif = new SimpleNotification(MainActivity.this);
-					notif.Show("Notification : " + object.getJSONArray("listeNotification").getJSONObject(0).getString("texte"));
+					try {
+						JSONArray jsonA = jobj.getJSONArray("listeNotification");
+						if(jsonA.length() > 0) {
+							OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premier notification
+							Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
+							notif.Show();
 
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+						}else{//il n'y a aucune notification
+							Log.i("Notification LOG", "No Notification received");
+						}
+					}catch (Exception e){
+						Log.e("Notification LOG", e.toString());
+					}
 
 			}
 		});

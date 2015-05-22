@@ -9,13 +9,11 @@ import android.content.DialogInterface;
  */
 public class SimpleNotification extends Notification {
 
-
-    public SimpleNotification(Activity a) {
+    String msg;
+    public SimpleNotification(Activity a, String message) {
         super(a);
+        this.msg = message;
+        builder.setMessage(this.msg);
     }
 
-    public void Show(String info) {
-        builder.setMessage(info);
-        builder.show();
-    }
 }

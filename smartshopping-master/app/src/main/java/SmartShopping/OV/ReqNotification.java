@@ -58,6 +58,23 @@ public class ReqNotification extends OVReq {
         return true;
     }
 
+    public boolean updateNotificationResponse(OVNotification notification, OnDataReturnListener dataReturnListener){
+
+        WebServer ws = WebServer.getInstance();
+        try {
+            List<NameValuePair> nvp = new ArrayList<NameValuePair>();
+
+
+            nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
+            ws.sendRequest(WebServer.COMMANDE.UpdateReponse, nvp, dataReturnListener);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public int getMajor() {
         return major;
     }
