@@ -43,6 +43,7 @@ public class OVNotification extends OVObject {
         this.responseNeeded = responseNeeded;
         this.texte = texte;
         this.ovBeacon = new OVBeacon();
+        this.reponseEnvoye = new OVReponse();
     }
 
     public OVPromotion getOvPromotion() {

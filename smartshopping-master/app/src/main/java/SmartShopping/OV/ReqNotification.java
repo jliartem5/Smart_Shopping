@@ -5,6 +5,8 @@
  */
 package SmartShopping.OV;
 
+import android.util.Log;
+
 import com.example.sshopping.http.OnDataReturnListener;
 
 import org.apache.http.NameValuePair;
@@ -45,10 +47,11 @@ public class ReqNotification extends OVReq {
             //OVNotification notification = new OVNotification(1, this.distance, 0, "-");
             //notification.getOvBeacon().setMajor(this.major);
 
-            //Test beacon fictif
+            //Test beacon fictif - sans reponse
             OVNotification notification = new OVNotification(1, 1, 0, "-");
-            notification.getOvBeacon().setMajor(2);
 
+            notification.getOvBeacon().setMajor(2);
+            Log.v("BEACON", notification.toJSON().toString());
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
             ws.sendRequest(WebServer.COMMANDE.Notification, nvp, dataListener);
         } catch (Exception e) {
@@ -64,7 +67,7 @@ public class ReqNotification extends OVReq {
         try {
             List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 
-
+            Log.v("Notification LOG", notification.toJSON().toString());
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
             ws.sendRequest(WebServer.COMMANDE.UpdateReponse, nvp, dataReturnListener);
 

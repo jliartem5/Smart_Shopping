@@ -20,6 +20,7 @@ public class OVReponse extends OVObject {
 
     
     public OVReponse(){
+        this.id = 1;
         this.etat = 0;
     }
     
