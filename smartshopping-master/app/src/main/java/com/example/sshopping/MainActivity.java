@@ -111,6 +111,9 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private Button _btnDelete;
 	private Button _speedShopping;
 
+	public boolean boucleNotif = false;
+	private long boucleNotifTime = 0;
+
 	@SuppressLint("NewApi")
 	@Override
 	/**
@@ -487,25 +490,27 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 	@Override
 	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
-		int major = beacon.getMajor();
-		int distance = toProximity.getValue();
+		if(!this.boucleNotif) {
+			this.boucleNotif=true;
+			int major = beacon.getMajor();
+			int distance = toProximity.getValue();
 
-		// requete notification
-		ReqNotification reqNotification = new ReqNotification();
-		reqNotification.setMajor(major);
-		reqNotification.setDistance(distance);
+			// requete notification
+			ReqNotification reqNotification = new ReqNotification();
+			reqNotification.setMajor(major);
+			reqNotification.setDistance(distance);
 
-		reqNotification.requestNotifications(new OnDataReturnListener() {
-			@Override
-			public void OnDataReturn(JSONObject jobj) {
-				RepNotification repN = new RepNotification();
+			reqNotification.requestNotifications(new OnDataReturnListener() {
+				@Override
+				public void OnDataReturn(JSONObject jobj) {
+					RepNotification repN = new RepNotification();
 
-				Log.v("BEACON", jobj.toString());
+					Log.v("BEACON", jobj.toString());
 
 					try {
 						JSONArray jsonA = jobj.getJSONArray("listeNotification");
 						if(jsonA.length() > 0) {
-							OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premier notification
+							OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premiere notification
 							Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
 							notif.Show();
 
@@ -516,7 +521,12 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 						Log.e("Notification LOG", e.toString());
 					}
 
-			}
-		});
+				}
+			});
+			boucleNotifTime = System.currentTimeMillis();
+
+		} else if (System.currentTimeMillis() > boucleNotifTime + 60000)  { //180000ms -> 3min, 60000ms -> 1min
+			this.boucleNotif = false;
+		}
 	}
 }
