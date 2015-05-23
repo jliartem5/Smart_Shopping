@@ -34,7 +34,10 @@ public class OVBeacon extends OVObject {
     }
     
     public OVBeacon() {
-        
+        this.id = 1;
+        this.uuid = "test";
+        this.major = 2;
+        this.minor = 1;
     }
 
     public OVBeacon(Integer idBeacon, String uuid, int major, int minor) {
