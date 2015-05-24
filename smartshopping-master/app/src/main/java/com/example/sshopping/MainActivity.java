@@ -112,7 +112,9 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private Button _speedShopping;
 
 	public boolean boucleNotif = false;
-	private long boucleNotifTime = 0;
+	public long boucleNotifTime = 0;
+	public int delayNotif = 60000; //180000ms -> 3min, 60000ms -> 1min
+
 
 	@SuppressLint("NewApi")
 	@Override
@@ -314,31 +316,6 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 		this._fm = getSupportFragmentManager();
 		this.switchFragment(new EmptyFragment());
-
-
-
-
-
-
-		ReqNotification reqNotification = new ReqNotification();
-		reqNotification.requestNotifications(new OnDataReturnListener() {
-			@Override
-			public void OnDataReturn(JSONObject jobj) {
-				Log.i("Notification LOG", jobj.toString());
-				try {
-					JSONArray jsonA = jobj.getJSONArray("listeNotification");
-					if(jsonA.length() > 0) {
-						OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premier notification
-						Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
-
-					}else{//il n'y a aucune notification
-
-					}
-				}catch (Exception e){
-					Log.e("Notification LOG", e.toString());
-				}
-			}
-		});
 	}
 
 
@@ -491,6 +468,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	@Override
 	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
 		if(!this.boucleNotif) {
+			Log.v("BEACON", "execution requete");
 			this.boucleNotif=true;
 			int major = beacon.getMajor();
 			int distance = toProximity.getValue();
@@ -510,11 +488,11 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 					try {
 						JSONArray jsonA = jobj.getJSONArray("listeNotification");
 						if(jsonA.length() > 0) {
-							OVNotification notification = new OVNotification(jsonA.getString(0));//Prend la premiere notification
+							OVNotification notification = new OVNotification(jsonA.getString(0)); // Prend la premiere notification
 							Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
 							notif.Show();
 
-						}else{//il n'y a aucune notification
+						} else { // il n'y a aucune notification
 							Log.i("Notification LOG", "No Notification received");
 						}
 					}catch (Exception e){
@@ -523,9 +501,10 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 				}
 			});
-			boucleNotifTime = System.currentTimeMillis();
 
-		} else if (System.currentTimeMillis() > boucleNotifTime + 60000)  { //180000ms -> 3min, 60000ms -> 1min
+			this.boucleNotifTime = System.currentTimeMillis();
+
+		} else if (System.currentTimeMillis() > (this.boucleNotifTime + this.delayNotif))  {
 			this.boucleNotif = false;
 		}
 	}
