@@ -51,7 +51,7 @@ public class ReqNotification extends OVReq {
             OVNotification notification = new OVNotification(1, 1, 0, "-");
 
             notification.getOvBeacon().setMajor(2);
-            Log.v("BEACON", notification.toJSON().toString());
+            Log.v("BEACON", "Request Notification...");
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
             ws.sendRequest(WebServer.COMMANDE.Notification, nvp, dataListener);
         } catch (Exception e) {
@@ -67,9 +67,26 @@ public class ReqNotification extends OVReq {
         try {
             List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 
-            Log.v("Notification LOG", notification.toJSON().toString());
+            Log.v("Notification LOG", "New notification to update:"+notification.toJSON().toString());
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
             ws.sendRequest(WebServer.COMMANDE.UpdateReponse, nvp, dataReturnListener);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean getProduitByReponse(OVReponse reponse, OnDataReturnListener dataReturnListener){
+
+        WebServer ws = WebServer.getInstance();
+        try {
+            List<NameValuePair> nvp = new ArrayList<NameValuePair>();
+
+            Log.v("Notification LOG", "Reponse:"+reponse.toJSON().toString());
+            nvp.add(new BasicNameValuePair("Reponse", reponse.toJSON().toString()));
+            ws.sendRequest(WebServer.COMMANDE.GetProduitByReponse, nvp, dataReturnListener);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

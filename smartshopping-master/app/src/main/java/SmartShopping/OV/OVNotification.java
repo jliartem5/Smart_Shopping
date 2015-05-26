@@ -30,7 +30,7 @@ public class OVNotification extends OVObject {
             this.distance = object.getInt("distance");
             this.id = object.getInt("id");
             this.responseNeeded = object.getInt("responseNeeded");
-            this.texte = "texte";
+            this.texte = object.getString("texte");
             this.ovBeacon = new OVBeacon(object.getJSONObject("ovBeacon").toString());
             this.reponseEnvoye = new OVReponse(object.getJSONObject("reponseEnvoye").toString());
         } catch (JSONException ex) {

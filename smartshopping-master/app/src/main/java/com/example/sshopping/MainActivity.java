@@ -272,44 +272,42 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 				OVProduit clickedProduit = (OVProduit) parent.getItemAtPosition(position);
 				if (clickedProduit != null) {
-					produitToAdd = new OVListeProduit(
-							false, false, clickedProduit.getId(), MainActivity.this._mySmartList.getId()
-					);
-					produitToAdd.setId(-1);//Mettre un id bidon au départ
-
-					try {
-						Log.i("HttpClient", produitToAdd.toJSON().toString());
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					ReqListeProduit reqAddProduit = new ReqListeProduit();
-					reqAddProduit.setOvListeProduit(produitToAdd);
-
-					reqAddProduit.requestAddListeProduit(new OnDataReturnListener() {
-
-						@Override
-						public void OnDataReturn(JSONObject jobj) {
-							try {
-								int newLstProduitID = jobj.getInt("idListeProduit");
-								produitToAdd.setId(newLstProduitID);
-								MainActivity.this._mySmartList.getProduitsSmartList().add(produitToAdd);
-								MainActivity.this.adapter.notifyDataSetChanged();
-								MainActivity.this._autocomleteView.setText("");
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-						}
-
-					});
+					MainActivity.this.addProduitToSmartList(clickedProduit);
 				}
 
 			}
 
 		});
-		
+
+
+		/*********************CODE DE TESTE Notification*****************/
+		ReqNotification reqNotification = new ReqNotification();
+		reqNotification.requestNotifications(new OnDataReturnListener() {
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				RepNotification repN = new RepNotification();
+
+				Log.v("BEACON", jobj.toString());
+
+				try {
+					JSONArray jsonA = jobj.getJSONArray("listeNotification");
+					if (jsonA.length() > 0) {
+						Log.v("BEACON", "Trouve "+jsonA.length()+" notif");
+						OVNotification notification = new OVNotification(jsonA.getString(0)); // Prend la premiere notification
+						Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
+						notif.Show();
+
+					} else { // il n'y a aucune notification
+						Log.i("Notification LOG", "No Notification received");
+					}
+				} catch (Exception e) {
+					Log.e("Notification LOG", e.toString());
+				}
+
+			}
+		});
+		/******FIN Code de teste Notification**************/
+
 		this.actionBar.setDisplayShowTitleEnabled(true);
 		this.actionBar.setDisplayHomeAsUpEnabled(true);
 		this.actionBar.setDisplayShowCustomEnabled(true);
@@ -463,6 +461,45 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	@Override
 	public void onDiscoveredBeacons(List<SBBeacon> beacons) {
 		SBLogger.d("we discover " + beacons.size() + " beacons!");
+	}
+
+	public void addProduitToSmartList(OVProduit produit){
+		final OVListeProduit produitToAdd = new OVListeProduit(
+				false, false, produit.getId(), MainActivity.this._mySmartList.getId()
+		);
+		produitToAdd.setId(-1);//Mettre un id bidon au départ
+
+		try {
+			Log.i("HttpClient", produitToAdd.toJSON().toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ReqListeProduit reqAddProduit = new ReqListeProduit();
+		reqAddProduit.setOvListeProduit(produitToAdd);
+
+		reqAddProduit.requestAddListeProduit(new OnDataReturnListener() {
+
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				try {
+					int newLstProduitID = jobj.getInt("idListeProduit");
+					produitToAdd.setId(newLstProduitID);
+					MainActivity.this._mySmartList.getProduitsSmartList().add(produitToAdd);
+					MainActivity.this.adapter.notifyDataSetChanged();
+					MainActivity.this._autocomleteView.setText("");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+		});
+	}
+
+	public OVSmartList getMySmartList(){
+		return this._mySmartList;
 	}
 
 	@Override
