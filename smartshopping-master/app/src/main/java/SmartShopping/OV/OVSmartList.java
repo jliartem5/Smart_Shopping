@@ -13,7 +13,18 @@ public class OVSmartList extends OVObject{
 	
 	private List<OVListeProduit> produitsSmartList;
 	private String nom;
-	
+
+	public OVUtilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(OVUtilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
+
+	private OVUtilisateur utilisateur;
+
+
 	public OVSmartList(String jsonStr){
         try 
         {

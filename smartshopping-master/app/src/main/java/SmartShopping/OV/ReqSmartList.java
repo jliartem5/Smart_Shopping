@@ -22,10 +22,19 @@ public class ReqSmartList extends OVReq{
 		
 	}
 	
-	public void requestGetSmartList(OnDataReturnListener listener){
+	public void requestGetSmartList(OVUtilisateur user, OnDataReturnListener listener){
 
-		WebServer ws = WebServer.getInstance();		
-		 ws.sendRequest(WebServer.COMMANDE.GetSmartList, new ArrayList<NameValuePair>(), listener);
+		WebServer ws = WebServer.getInstance();
+
+		List<NameValuePair> nvp = new ArrayList<NameValuePair>();
+		try {
+			nvp.add(new BasicNameValuePair("utilisateur", user.toJSON().toString()));
+			ws.sendRequest(WebServer.COMMANDE.GetSmartList, new ArrayList<NameValuePair>(), listener);
+		}catch (JSONException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
 	}
 	
 	public boolean requestUpdateSmartList(OnDataReturnListener listener){
@@ -35,6 +44,7 @@ public class ReqSmartList extends OVReq{
 		try {
 			Log.i("HttpClient", this.smartList.toJSON().toString());
 			nvp.add(new BasicNameValuePair("SmartList", this.smartList.toJSON().toString()));
+
 			ws.sendRequest(WebServer.COMMANDE.UpdateSmartList, nvp, listener);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

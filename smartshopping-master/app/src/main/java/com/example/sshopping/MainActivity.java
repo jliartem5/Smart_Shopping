@@ -22,11 +22,13 @@ import SmartShopping.OV.OVNotification;
 import SmartShopping.OV.OVProduit;
 import SmartShopping.OV.OVSmartList;
 import SmartShopping.OV.OVSommet;
+import SmartShopping.OV.OVUtilisateur;
 import SmartShopping.OV.RepListeProduit;
 import SmartShopping.OV.RepProduit;
 import SmartShopping.OV.RepSmartList;
 import SmartShopping.OV.RepSommet;
 import SmartShopping.OV.RepNotification;
+import SmartShopping.OV.RepUtilisateur;
 import SmartShopping.OV.ReqListeProduit;
 import SmartShopping.OV.ReqNotification;
 import SmartShopping.OV.ReqProduit;
@@ -35,6 +37,7 @@ import SmartShopping.OV.ReqSommet;
 
 
 // SmartBeacon imports
+import SmartShopping.OV.ReqUtilisateur;
 import eu.smartbeacon.sdk.core.SBBeacon;
 import eu.smartbeacon.sdk.core.SBLocationManager;
 import eu.smartbeacon.sdk.core.SBLocationManagerListener;
@@ -64,6 +67,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -101,7 +105,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	
 	public static List<OVSommet> _allSommets = null;
 	private static List<OVProduit> _smartListEtablished = new ArrayList<OVProduit>();
-	
+
+	private OVUtilisateur _utilisateur;
 	private OVSmartList _mySmartList;
 	private MainListProduitAdapter adapter;
 	private FragmentManager	_fm;
@@ -110,7 +115,6 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private ListView _listview_produit;
 	private Button _btnDelete;
 	private Button _speedShopping;
-
 	public boolean boucleNotif = false;
 	public long boucleNotifTime = 0;
 	public int delayNotif = 60000; //180000ms -> 3min, 60000ms -> 1min
@@ -247,10 +251,17 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 				}
 			}
 		});
-		
 
-		ReqSmartList reqSmartList = new ReqSmartList();
-				reqSmartList.requestGetSmartList(
+		ReqUtilisateur reqUtilisateur = new ReqUtilisateur();
+		TelephonyManager mngr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		reqUtilisateur.requestUser(mngr.getDeviceId(), new OnDataReturnListener() {
+			@Override
+			public void OnDataReturn(JSONObject jobj) {
+				RepUtilisateur repUtilisateur = new RepUtilisateur(jobj.toString());
+				MainActivity.this._utilisateur = repUtilisateur.getUtilisateur();
+
+				ReqSmartList reqSmartList = new ReqSmartList();
+				reqSmartList.requestGetSmartList(MainActivity.this._utilisateur,
 						new OnDataReturnListener() {
 							@Override
 							public void OnDataReturn(JSONObject jobj) {
@@ -262,6 +273,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 							}
 
 						});
+			}
+		});
 		
 		this._autocomleteView.setOnItemClickListener(new OnItemClickListener() {
 			OVListeProduit produitToAdd;
