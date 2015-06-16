@@ -25,7 +25,7 @@ public class ReqUtilisateur extends OVReq{
 		WebServer ws = WebServer.getInstance();		
 
 		List<NameValuePair> nvp = new ArrayList<NameValuePair>();
-		Log.i("HttpClient", imei.toString());
+		Log.i("HttpClient", "User IMEI:"+imei.toString());
 		nvp.add(new BasicNameValuePair("IMEI", imei));
 		ws.sendRequest(WebServer.COMMANDE.GetUser, nvp, listener);
 		return true;

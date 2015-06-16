@@ -29,7 +29,7 @@ public class ReqSmartList extends OVReq{
 		List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 		try {
 			nvp.add(new BasicNameValuePair("utilisateur", user.toJSON().toString()));
-			ws.sendRequest(WebServer.COMMANDE.GetSmartList, new ArrayList<NameValuePair>(), listener);
+			ws.sendRequest(WebServer.COMMANDE.GetSmartList, nvp, listener);
 		}catch (JSONException e){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
