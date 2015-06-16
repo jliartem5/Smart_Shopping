@@ -266,7 +266,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 							@Override
 							public void OnDataReturn(JSONObject jobj) {
 								MainActivity.this._mySmartList = new RepSmartList(jobj.toString()).getSmartList();
-								MainActivity.this._mySmartList.setId(1);
+								//MainActivity.this._mySmartList.setId(1);
 								MainActivity.this.adapter = new MainListProduitAdapter(MainActivity.this, _allProduits, MainActivity.this._mySmartList.getProduitsSmartList());
 								MainActivity.this._listview_produit.setAdapter(adapter);
 
