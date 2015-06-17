@@ -33,6 +33,7 @@ public class OVNotification extends OVObject {
             this.texte = object.getString("texte");
             this.ovBeacon = new OVBeacon(object.getJSONObject("ovBeacon").toString());
             this.reponseEnvoye = new OVReponse(object.getJSONObject("reponseEnvoye").toString());
+            this.ovPromotion = new OVPromotion(object.getJSONObject("ovPromotion"));
         } catch (JSONException ex) {
         }
     }
