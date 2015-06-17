@@ -44,13 +44,13 @@ public class ReqNotification extends OVReq {
         try {
             List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 
-            //OVNotification notification = new OVNotification(1, this.distance, 0, "-");
-            //notification.getOvBeacon().setMajor(this.major);
+            OVNotification notification = new OVNotification(1, this.distance, 0, "-");
+            notification.getOvBeacon().setMajor(this.major);
 
             //Test beacon fictif - sans reponse
-            OVNotification notification = new OVNotification(1, 1, 0, "-");
+            //OVNotification notification = new OVNotification(1, 1, 0, "-");
+            //notification.getOvBeacon().setMajor(2);
 
-            notification.getOvBeacon().setMajor(2);
             Log.v("BEACON", "Request Notification...");
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
             ws.sendRequest(WebServer.COMMANDE.Notification, nvp, dataListener);

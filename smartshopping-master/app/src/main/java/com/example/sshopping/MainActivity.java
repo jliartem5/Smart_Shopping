@@ -115,8 +115,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private ListView _listview_produit;
 	private Button _btnDelete;
 	private Button _speedShopping;
-	public boolean boucleNotif = false;
-	public long boucleNotifTime = 0;
+	public static boolean boucleNotif = false;
+	public static long boucleNotifTime = 0;
 	public int delayNotif = 60000; //180000ms -> 3min, 60000ms -> 1min
 
 
@@ -440,7 +440,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		// available values: Frequency.HIGH (eq. 1 sec), Frequency.DEFAULT (eq. 3 sec) and Frequency.LOW (eq. 5 sec)
 		//
 		// by default, value is Frequency.DEFAULT
-		// sbManager.setUpdateFrequency(Frequency.DEFAULT);
+		sbManager.setUpdateFrequency(Frequency.HIGH);
 
 		// start monitoring and ranging beacons
 		sbManager.startMonitoringAllBeaconRegions();
@@ -474,6 +474,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	@Override
 	public void onDiscoveredBeacons(List<SBBeacon> beacons) {
 		SBLogger.d("we discover " + beacons.size() + " beacons!");
+		Log.i("test","beacon "+beacons.size());
 	}
 
 	public void addProduitToSmartList(OVProduit produit){
@@ -517,9 +518,11 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 	@Override
 	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
+
+		Log.i("test","distanceVRAI : "+toProximity.getValue());
+
 		if(!this.boucleNotif) {
 			Log.v("BEACON", "execution requete");
-			this.boucleNotif=true;
 			int major = beacon.getMajor();
 			int distance = toProximity.getValue();
 
@@ -528,6 +531,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 			reqNotification.setMajor(major);
 			reqNotification.setDistance(distance);
 
+
+			Log.i("test", "distance : " + distance);
 			reqNotification.requestNotifications(new OnDataReturnListener() {
 				@Override
 				public void OnDataReturn(JSONObject jobj) {
@@ -537,22 +542,24 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 					try {
 						JSONArray jsonA = jobj.getJSONArray("listeNotification");
-						if(jsonA.length() > 0) {
+						if (jsonA.length() > 0) {
 							OVNotification notification = new OVNotification(jsonA.getString(0)); // Prend la premiere notification
-							Notification notif = NotificationFactory.BuildNotification(MainActivity.this,notification);
+							Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
 							notif.Show();
+							MainActivity.boucleNotif=true;
+							MainActivity.boucleNotifTime = System.currentTimeMillis();
 
 						} else { // il n'y a aucune notification
 							Log.i("Notification LOG", "No Notification received");
 						}
-					}catch (Exception e){
+					} catch (Exception e) {
 						Log.e("Notification LOG", e.toString());
 					}
 
 				}
 			});
 
-			this.boucleNotifTime = System.currentTimeMillis();
+
 
 		} else if (System.currentTimeMillis() > (this.boucleNotifTime + this.delayNotif))  {
 			this.boucleNotif = false;
