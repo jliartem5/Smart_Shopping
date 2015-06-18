@@ -28,9 +28,11 @@ public class OVPromotion extends OVObject{
     private float promotion;
     private Date dateDebut;
     private Date dateFin;
-    
+
+
     public OVPromotion (JSONObject jobj){
-    	try {
+        try {
+            this.setId(jobj.getInt("id"));
 			String libellePromo = jobj.getString("libellePromotion");
 			float promotion = Float.parseFloat(jobj.get("promotion").toString());
 			SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);

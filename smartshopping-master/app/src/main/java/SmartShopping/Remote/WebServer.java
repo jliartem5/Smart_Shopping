@@ -31,7 +31,7 @@ public class WebServer {
 		UpdateSmartList, TousLesSommets,
 		ToutesLesPromotions, Notification,
 		UpdateReponse, GetProduitByReponse,
-		GetUser
+		GetUser, InsererCommande
 	};
 	
 	// Design Pattern Singleton

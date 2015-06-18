@@ -21,12 +21,12 @@ public class ReqUtilisateur extends OVReq{
 	}
 
 	
-	public boolean requestUser(String imei, OnDataReturnListener listener){
-		WebServer ws = WebServer.getInstance();		
-
+	public boolean requestUser(String id, OnDataReturnListener listener){
+		WebServer ws = WebServer.getInstance();
 		List<NameValuePair> nvp = new ArrayList<NameValuePair>();
-		Log.i("HttpClient", "User IMEI:"+imei.toString());
-		nvp.add(new BasicNameValuePair("IMEI", imei));
+		id = id.substring(id.length()-8, id.length());
+		Log.i("HttpClient", "User ID:"+id.toString());
+		nvp.add(new BasicNameValuePair("IMEI", id));
 		ws.sendRequest(WebServer.COMMANDE.GetUser, nvp, listener);
 		return true;
 	}

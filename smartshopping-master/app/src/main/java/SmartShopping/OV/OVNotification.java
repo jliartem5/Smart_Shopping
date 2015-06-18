@@ -5,6 +5,11 @@
  */
 package SmartShopping.OV;
 
+import android.app.Activity;
+import android.content.Context;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,11 +26,26 @@ public class OVNotification extends OVObject {
     private String texte;
     private OVReponse reponseEnvoye;
 
-    public OVNotification(String jsonStr) {
+    private int idUtilisateur;
+    public int getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    public void setIdUtilisateur(int idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+    public OVNotification(String jsonStr, Activity activity) {
 
         try {
             JSONObject object;
             object = new JSONObject(jsonStr);
+            TelephonyManager mngr = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+            String deviceID = mngr.getDeviceId();
+            deviceID = deviceID.substring(deviceID.length()-8, deviceID.length());
+            Log.i("Notification Log", "Device id:" + deviceID);
+            Integer userID = Integer.parseInt(deviceID);
+            Log.i("Notification Log", "Device id:" + userID);
+            this.setIdUtilisateur(userID);
 
             this.distance = object.getInt("distance");
             this.id = object.getInt("id");
@@ -35,6 +55,7 @@ public class OVNotification extends OVObject {
             this.reponseEnvoye = new OVReponse(object.getJSONObject("reponseEnvoye").toString());
             this.ovPromotion = new OVPromotion(object.getJSONObject("ovPromotion"));
         } catch (JSONException ex) {
+            Log.i("Notification Log", ex.getMessage());
         }
     }
 

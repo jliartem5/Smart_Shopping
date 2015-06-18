@@ -3,6 +3,8 @@ package com.example.sshopping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +19,7 @@ import com.example.sshopping.notification.SimpleNotification;
 import com.example.sshopping.views.ISlideMenuActivity;
 
 import SmartShopping.OV.OVCategorie;
+import SmartShopping.OV.OVCommande;
 import SmartShopping.OV.OVListeProduit;
 import SmartShopping.OV.OVNotification;
 import SmartShopping.OV.OVProduit;
@@ -38,6 +41,7 @@ import SmartShopping.OV.ReqSommet;
 
 // SmartBeacon imports
 import SmartShopping.OV.ReqUtilisateur;
+import SmartShopping.Remote.WebServer;
 import eu.smartbeacon.sdk.core.SBBeacon;
 import eu.smartbeacon.sdk.core.SBLocationManager;
 import eu.smartbeacon.sdk.core.SBLocationManagerListener;
@@ -127,8 +131,10 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	 * Elle cree la barre d'action (haut) et appelle le fragment connexion.
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		this._drawerLayout = (DrawerLayout) findViewById(R.id.main_container);
 
 		this.actionBar = getActionBar();
@@ -306,7 +312,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 					JSONArray jsonA = jobj.getJSONArray("listeNotification");
 					if (jsonA.length() > 0) {
 						Log.v("BEACON", "Trouve "+jsonA.length()+" notif");
-						OVNotification notification = new OVNotification(jsonA.getString(0)); // Prend la premiere notification
+						OVNotification notification = new OVNotification(jsonA.getString(0), MainActivity.this); // Prend la premiere notification
 						Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
 						notif.Show();
 
@@ -314,7 +320,8 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 						Log.i("Notification LOG", "No Notification received");
 					}
 				} catch (Exception e) {
-					Log.e("Notification LOG", e.toString());
+					e.printStackTrace();
+					Log.e("Notification LOG", "Error: "+e.toString());
 				}
 
 			}
@@ -474,7 +481,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	@Override
 	public void onDiscoveredBeacons(List<SBBeacon> beacons) {
 		SBLogger.d("we discover " + beacons.size() + " beacons!");
-		Log.i("test","beacon "+beacons.size());
+		Log.i("test", "beacon " + beacons.size());
 	}
 
 	public void addProduitToSmartList(OVProduit produit){
@@ -519,47 +526,78 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	@Override
 	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
 
-		Log.i("test","distanceVRAI : "+toProximity.getValue());
-
 		if(!this.boucleNotif) {
-			Log.v("BEACON", "execution requete");
+
 			int major = beacon.getMajor();
+			int minor = beacon.getMinor();
+			Log.i("BEACON LOG", "Major:"+major+";"+"Minor:"+minor);
+
 			int distance = toProximity.getValue();
 
-			// requete notification
-			ReqNotification reqNotification = new ReqNotification();
-			reqNotification.setMajor(major);
-			reqNotification.setDistance(distance);
-
-
-			Log.i("test", "distance : " + distance);
-			reqNotification.requestNotifications(new OnDataReturnListener() {
-				@Override
-				public void OnDataReturn(JSONObject jobj) {
-					RepNotification repN = new RepNotification();
-
-					Log.v("BEACON", jobj.toString());
-
+			if(minor == 764 ){
+				if( MainActivity.this._mySmartList != null) {
+					Log.i("COMMANDE LOG", "BEACON caisse detecté");
+					TelephonyManager mngr = (TelephonyManager) MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
+					String str = mngr.getDeviceId();
+					str = str.substring(str.length() - 8, str.length());
+					OVCommande ovCommande = new OVCommande(MainActivity.this._mySmartList.getId(), Integer.parseInt(str), 0);
+					WebServer ws = WebServer.getInstance();
 					try {
-						JSONArray jsonA = jobj.getJSONArray("listeNotification");
-						if (jsonA.length() > 0) {
-							OVNotification notification = new OVNotification(jsonA.getString(0)); // Prend la premiere notification
-							Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
-							notif.Show();
-							MainActivity.boucleNotif=true;
-							MainActivity.boucleNotifTime = System.currentTimeMillis();
+						List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 
-						} else { // il n'y a aucune notification
-							Log.i("Notification LOG", "No Notification received");
-						}
+						Log.i("COMMANDE LOG", "New commande:" + ovCommande.toJSON().toString());
+						nvp.add(new BasicNameValuePair("Commande", ovCommande.toJSON().toString()));
+						ws.sendRequest(WebServer.COMMANDE.InsererCommande, nvp, new OnDataReturnListener() {
+							@Override
+							public void OnDataReturn(JSONObject jobj) {
+								SimpleNotification simpleNotification = new SimpleNotification(MainActivity.this, "Vous avez payé la commande !");
+								simpleNotification.Show();
+								Log.i("COMMANDE LOG", jobj.toString());
+							}
+						});
+
 					} catch (Exception e) {
-						Log.e("Notification LOG", e.toString());
+						Log.i("BEACON LOG", "Error Commande beacon:"+e.getMessage());
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
+				}else{
+					Log.i("BEACON LOG", "But SmartList NULL");
 				}
-			});
+			}else {
+				Log.i("BEACON LOG", "promotion tache");
+
+				// requete notification
+				ReqNotification reqNotification = new ReqNotification();
+				reqNotification.setMajor(major);
+				reqNotification.setDistance(distance);
+
+				reqNotification.requestNotifications(new OnDataReturnListener() {
+					@Override
+					public void OnDataReturn(JSONObject jobj) {
+						RepNotification repN = new RepNotification();
 
 
+						try {
+							JSONArray jsonA = jobj.getJSONArray("listeNotification");
+							if (jsonA.length() > 0) {
+								OVNotification notification = new OVNotification(jsonA.getString(0), MainActivity.this); // Prend la premiere notification
+								Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
+								notif.Show();
+								MainActivity.boucleNotif = true;
+								MainActivity.boucleNotifTime = System.currentTimeMillis();
+
+							} else { // il n'y a aucune notification
+								Log.i("Notification LOG", "No Notification received");
+							}
+						} catch (Exception e) {
+							Log.e("Notification LOG", e.toString());
+						}
+
+					}
+				});
+
+			}
 
 		} else if (System.currentTimeMillis() > (this.boucleNotifTime + this.delayNotif))  {
 			this.boucleNotif = false;

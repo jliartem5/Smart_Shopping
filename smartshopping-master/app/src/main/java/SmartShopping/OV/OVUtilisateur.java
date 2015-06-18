@@ -16,15 +16,6 @@ import java.util.List;
  * @author TheNabo1
  */
 public class OVUtilisateur extends OVObject {
-    private String IMEI;
-
-    public String getIMEI() {
-        return IMEI;
-    }
-
-    public void setIMEI(String IMEI) {
-        this.IMEI = IMEI;
-    }
 
 
     public OVUtilisateur(String jsonStr) {
@@ -34,9 +25,12 @@ public class OVUtilisateur extends OVObject {
             object = new JSONObject(jsonStr);
 
             this.id = object.getInt("id");
-            this.IMEI = object.getString("IMEI");
+
         } catch (JSONException ex) {
         }
+    }
+    public OVUtilisateur(int userID){
+        this.id = userID;
     }
     
 }
