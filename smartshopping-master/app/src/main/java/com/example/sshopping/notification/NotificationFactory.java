@@ -2,6 +2,8 @@ package com.example.sshopping.notification;
 
 import android.app.Activity;
 
+import org.json.JSONException;
+
 import SmartShopping.OV.OVNotification;
 
 /**
@@ -9,7 +11,7 @@ import SmartShopping.OV.OVNotification;
  */
 public class NotificationFactory {
 
-    public static Notification BuildNotification(Activity a, OVNotification notification){
+    public static Notification BuildNotification(Activity a, OVNotification notification) throws JSONException {
         Notification alertNotif = null;
         if(notification.getResponseNeeded() == 1){
             alertNotif = new ButtonNotification(a, notification);

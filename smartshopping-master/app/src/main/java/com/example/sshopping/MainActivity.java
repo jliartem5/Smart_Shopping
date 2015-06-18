@@ -1,72 +1,13 @@
 package com.example.sshopping;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.example.sshopping.R;
-import com.example.sshopping.adapter.MainListProduitAdapter;
-import com.example.sshopping.http.OnDataReturnListener;
-import com.example.sshopping.notification.ButtonNotification;
-import com.example.sshopping.notification.Notification;
-import com.example.sshopping.notification.NotificationFactory;
-import com.example.sshopping.notification.SimpleNotification;
-import com.example.sshopping.views.ISlideMenuActivity;
-
-import SmartShopping.OV.OVCategorie;
-import SmartShopping.OV.OVCommande;
-import SmartShopping.OV.OVListeProduit;
-import SmartShopping.OV.OVNotification;
-import SmartShopping.OV.OVProduit;
-import SmartShopping.OV.OVSmartList;
-import SmartShopping.OV.OVSommet;
-import SmartShopping.OV.OVUtilisateur;
-import SmartShopping.OV.RepListeProduit;
-import SmartShopping.OV.RepProduit;
-import SmartShopping.OV.RepSmartList;
-import SmartShopping.OV.RepSommet;
-import SmartShopping.OV.RepNotification;
-import SmartShopping.OV.RepUtilisateur;
-import SmartShopping.OV.ReqListeProduit;
-import SmartShopping.OV.ReqNotification;
-import SmartShopping.OV.ReqProduit;
-import SmartShopping.OV.ReqSmartList;
-import SmartShopping.OV.ReqSommet;
-
-
-// SmartBeacon imports
-import SmartShopping.OV.ReqUtilisateur;
-import SmartShopping.Remote.WebServer;
-import eu.smartbeacon.sdk.core.SBBeacon;
-import eu.smartbeacon.sdk.core.SBLocationManager;
-import eu.smartbeacon.sdk.core.SBLocationManagerListener;
-import eu.smartbeacon.sdk.core.SBRegion;
-import eu.smartbeacon.sdk.core.SBScanDeviceListener;
-import eu.smartbeacon.sdk.core.SBLocationManager.Frequency;
-import eu.smartbeacon.sdk.utils.SBLogger;
-
-// other imports
-import android.app.Activity;
-import android.os.Bundle;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -84,13 +25,55 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.sshopping.adapter.MainListProduitAdapter;
+import com.example.sshopping.http.OnDataReturnListener;
+import com.example.sshopping.notification.ButtonNotification;
+import com.example.sshopping.notification.Notification;
+import com.example.sshopping.notification.NotificationFactory;
+import com.example.sshopping.notification.SimpleNotification;
+import com.example.sshopping.views.ISlideMenuActivity;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import SmartShopping.OV.OVCategorie;
+import SmartShopping.OV.OVCommande;
+import SmartShopping.OV.OVListeProduit;
+import SmartShopping.OV.OVNotification;
+import SmartShopping.OV.OVProduit;
+import SmartShopping.OV.OVSmartList;
+import SmartShopping.OV.OVSommet;
+import SmartShopping.OV.OVUtilisateur;
+import SmartShopping.OV.RepNotification;
+import SmartShopping.OV.RepProduit;
+import SmartShopping.OV.RepSmartList;
+import SmartShopping.OV.RepSommet;
+import SmartShopping.OV.RepUtilisateur;
+import SmartShopping.OV.ReqListeProduit;
+import SmartShopping.OV.ReqNotification;
+import SmartShopping.OV.ReqProduit;
+import SmartShopping.OV.ReqSmartList;
+import SmartShopping.OV.ReqSommet;
+import SmartShopping.OV.ReqUtilisateur;
+import SmartShopping.Remote.WebServer;
+import eu.smartbeacon.sdk.core.SBBeacon;
+import eu.smartbeacon.sdk.core.SBLocationManager;
+import eu.smartbeacon.sdk.core.SBLocationManager.Frequency;
+import eu.smartbeacon.sdk.core.SBLocationManagerListener;
+import eu.smartbeacon.sdk.utils.SBLogger;
+
+
+
+// SmartBeacon imports
+// other imports
 
 /**
  * Classe principale, qui permet de gerer l'application.
@@ -123,6 +106,9 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	public static long boucleNotifTime = 0;
 	public int delayNotif = 60000; //180000ms -> 3min, 60000ms -> 1min
 
+    // btn pormotion avec reponse en cours
+    private ButtonNotification btnNotif = null;
+    private OVNotification ovNotif = null;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -326,6 +312,26 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 			}
 		});
+
+        // REPONSE ANDROID WEAR PROMOTION (accpeter / refuser)
+
+       /* Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String[] repAccepte = getIntent().getStringArrayExtra("ACCEPTER");
+            //Boolean repRefuser = getIntent().getStringExtra("REFUSER", false);
+
+            Log.i("REP ACCEPTE", "REP = "+ repAccepte.toString());
+            //Log.i("REP REFUSER", "REP = "+ repRefuser.toString());
+
+            OVNotification ovNot = new OVNotification(((String)repAccepte[1]), this);
+            Log.i("REP NOTIF", ovNotif.getTexte());
+            if(((String)repAccepte[0]).equals("OK")) { // on a accepté la notif de promo
+                btnNotif.clickAccpeterPromotion(ovNot);
+            }/*else if(repRefuser){ // refus notif
+               // btnNotif.clickRefuserPromotion(btnNotif.getOvNotif());
+            }
+        }*/
+
 		/******FIN Code de teste Notification**************/
 
 		this.actionBar.setDisplayShowTitleEnabled(true);
@@ -378,7 +384,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		return false;
 	}
 
 	
@@ -432,7 +438,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		super.onPostCreate(savedInstanceState);
 
 		// enable logging message
-		SBLogger.setSilentMode(false);
+		SBLogger.setSilentMode(true);
 
 		// get shared instance of SBLocationManager
 		SBLocationManager sbManager = SBLocationManager.getInstance(this);
@@ -583,8 +589,12 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 							if (jsonA.length() > 0) {
 								OVNotification notification = new OVNotification(jsonA.getString(0), MainActivity.this); // Prend la premiere notification
 								Notification notif = NotificationFactory.BuildNotification(MainActivity.this, notification);
+                                if(notif.getClass().getSimpleName().equals("ButtonNotification")){
+                                    btnNotif = (ButtonNotification) notif;
+                                    ovNotif = notification;
+                                }
 								notif.Show();
-								MainActivity.boucleNotif = true;
+                                MainActivity.boucleNotif = true;
 								MainActivity.boucleNotifTime = System.currentTimeMillis();
 
 							} else { // il n'y a aucune notification
