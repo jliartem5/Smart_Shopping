@@ -53,7 +53,7 @@ public class ReqNotification extends OVReq {
 
             Log.v("BEACON", "Request Notification...");
             nvp.add(new BasicNameValuePair("Notification", notification.toJSON().toString()));
-            ws.sendRequest(WebServer.COMMANDE.Notification, nvp, dataListener);
+            ws.sendRequest(WebServer.COMMANDE.GetNotifications, nvp, dataListener);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

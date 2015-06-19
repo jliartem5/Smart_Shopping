@@ -35,7 +35,7 @@ public class ReqProduit extends OVReq {
     
 	public void requestTousLesProduits(OnDataReturnListener dataListener){
 		WebServer ws = WebServer.getInstance();		
-		ws.sendRequest(WebServer.COMMANDE.TousLesProduits, new ArrayList<NameValuePair>(), dataListener);
+		ws.sendRequest(WebServer.COMMANDE.FindAllProduits, new ArrayList<NameValuePair>(), dataListener);
 	}
 	
 	public boolean requestAjoutProduit(OnDataReturnListener dataListener){

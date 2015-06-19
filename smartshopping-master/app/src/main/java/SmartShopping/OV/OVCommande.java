@@ -43,7 +43,7 @@ public class OVCommande extends OVObject {
             this.idUtilisateur = object.getInt("idUtilisateur");
             this.idSmartlist = object.getInt("idSmartlist");
             this.montant = (float)object.getDouble("montant");
-           
+            this.date = object.getString("date");
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }

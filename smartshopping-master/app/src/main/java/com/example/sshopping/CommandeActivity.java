@@ -64,10 +64,11 @@ public class CommandeActivity extends Activity implements ISlideMenuActivity{
 		OVUtilisateur ovUtilisateur = new OVUtilisateur(Integer.parseInt(deviceID));
 		try {
 			nvp.add(new BasicNameValuePair("utilisateur", ovUtilisateur.toJSON().toString()));
+			Log.i("COMMANDE LOG", "Request: " + ovUtilisateur.toJSON().toString());
 		}catch (Exception e){
 			Log.i("COMMANDE LOG", e.getMessage());
 		}
-		WebServer.getInstance().sendRequest(WebServer.COMMANDE.GetCommande, nvp, new OnDataReturnListener(){
+		WebServer.getInstance().sendRequest(WebServer.COMMANDE.GetCommandes, nvp, new OnDataReturnListener() {
 
 			@Override
 			public void OnDataReturn(JSONObject jobj) {
@@ -93,7 +94,7 @@ public class CommandeActivity extends Activity implements ISlideMenuActivity{
 				final TableRow tableRow = new TableRow(this);
 				tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
 				TextView tv = new TextView(this);
-				tv.setText(cmd.getDate().toString());
+				tv.setText("Le "+cmd.getDate().toString());
 
 				final TextView montant = new TextView(this);
 				montant.setText(cmd.getMontant() + " €");

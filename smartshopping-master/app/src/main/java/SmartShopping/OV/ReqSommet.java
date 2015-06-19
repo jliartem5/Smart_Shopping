@@ -32,7 +32,7 @@ public class ReqSommet extends OVReq {
     
 	public void requestTousLesSommets(OnDataReturnListener dataListener){
 		WebServer ws = WebServer.getInstance();		
-		ws.sendRequest(WebServer.COMMANDE.TousLesSommets, new ArrayList<NameValuePair>(), dataListener);
+		ws.sendRequest(WebServer.COMMANDE.FindAllSommets, new ArrayList<NameValuePair>(), dataListener);
 	}
 	
     

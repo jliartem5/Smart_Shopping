@@ -47,7 +47,10 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 		Log.i("LJ", "Click on the slide menu");
 		switch(v.getId()){
 			case R.id.slide_menu_smartlist:
-				//this._mainActivity.switchFragment(new FragmentConnexion());
+
+				Intent backToSmartList = new Intent(this.getContext(), MainActivity.class);
+				this._parentActivity.startActivityForResult(backToSmartList, 0);
+
 				break;
 			case R.id.slide_menu_plan:
 				Intent switchActivityIntent = new Intent(this.getContext(), SmartPlanActivity.class);

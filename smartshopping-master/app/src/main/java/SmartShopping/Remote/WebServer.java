@@ -25,13 +25,13 @@ public class WebServer {
 	
 	
 	public enum COMMANDE {
-		TousLesProduits, AjouterProduit,
+		FindAllProduits, AjouterProduit,
 		GetSmartList, UpdateListeProduit,
 		AddListeProduit, postParam,
-		UpdateSmartList, TousLesSommets,
-		ToutesLesPromotions, Notification,
+		UpdateSmartList, FindAllSommets,
+		GetPromotions, GetNotifications,
 		UpdateReponse, GetProduitByReponse,
-		GetUser, InsererCommande, GetCommande
+		GetUtilisateur, AddCommande, GetCommandes
 	};
 	
 	// Design Pattern Singleton

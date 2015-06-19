@@ -104,7 +104,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private Button _speedShopping;
 	public static boolean boucleNotif = false;
 	public static long boucleNotifTime = 0;
-	public int delayNotif = 60000; //180000ms -> 3min, 60000ms -> 1min
+	public int delayNotif = 20000; //180000ms -> 3min, 60000ms -> 1min
 
     // btn pormotion avec reponse en cours
     private ButtonNotification btnNotif = null;
@@ -539,7 +539,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 			int distance = toProximity.getValue();
 
-			if(minor == 764 ){
+			if(minor == 764 && distance == SBBeacon.Proximity.IMMEDIATE.getValue()){
 				if( MainActivity.this._mySmartList != null && MainActivity.this._allProduits != null) {
 					Log.i("COMMANDE LOG", "BEACON caisse detecté");
 					TelephonyManager mngr = (TelephonyManager) MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -549,7 +549,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 					double montantTotal = 0;
 
 					List<OVListeProduit> currentProd = MainActivity.this._mySmartList.getProduitsSmartList();
-					/*for(int i=0; i<currentProd.size();++i){
+					for(int i=0; i<currentProd.size();++i){
 						int idProd = currentProd.get(i).getIdProduit();
 						for(int j=0; j<MainActivity.this._allProduits.size(); ++j){
 							OVProduit prod = MainActivity.this._allProduits.get(i);
@@ -558,7 +558,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 								break;
 							}
 						}
-					}*/
+					}
 					OVCommande ovCommande = new OVCommande(MainActivity.this._mySmartList.getId(), Integer.parseInt(str), (float)montantTotal);
 
 
@@ -569,7 +569,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 
 						Log.i("COMMANDE LOG", "New commande:" + ovCommande.toJSON().toString());
 						nvp.add(new BasicNameValuePair("Commande", ovCommande.toJSON().toString()));
-						ws.sendRequest(WebServer.COMMANDE.InsererCommande, nvp, new OnDataReturnListener() {
+						ws.sendRequest(WebServer.COMMANDE.AddCommande, nvp, new OnDataReturnListener() {
 							@Override
 							public void OnDataReturn(JSONObject jobj) {
 

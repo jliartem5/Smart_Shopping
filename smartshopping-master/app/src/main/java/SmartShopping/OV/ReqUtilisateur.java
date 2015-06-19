@@ -27,7 +27,7 @@ public class ReqUtilisateur extends OVReq{
 		id = id.substring(id.length()-8, id.length());
 		Log.i("HttpClient", "User ID:"+id.toString());
 		nvp.add(new BasicNameValuePair("IMEI", id));
-		ws.sendRequest(WebServer.COMMANDE.GetUser, nvp, listener);
+		ws.sendRequest(WebServer.COMMANDE.GetUtilisateur, nvp, listener);
 		return true;
 	}
 

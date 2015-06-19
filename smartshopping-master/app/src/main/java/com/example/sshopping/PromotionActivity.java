@@ -66,7 +66,7 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 		}catch (Exception e){
 			Log.i("Promotion LOG", e.getMessage());
 		}
-		WebServer.getInstance().sendRequest(WebServer.COMMANDE.ToutesLesPromotions, nvp, new OnDataReturnListener(){
+		WebServer.getInstance().sendRequest(WebServer.COMMANDE.GetPromotions, nvp, new OnDataReturnListener(){
 
 			@Override
 			public void OnDataReturn(JSONObject jobj) {
