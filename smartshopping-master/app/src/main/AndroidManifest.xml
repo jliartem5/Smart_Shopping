@@ -43,6 +43,10 @@
             android:name="com.example.sshopping.PromotionActivity"
             android:screenOrientation="portrait"
             android:label="Promotion"></activity>
+        <activity
+            android:name="com.example.sshopping.CommandeActivity"
+            android:screenOrientation="portrait"
+            android:label="Commande"></activity>
     </application>
 
 </manifest>

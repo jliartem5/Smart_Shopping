@@ -1,5 +1,6 @@
 package com.example.sshopping.views;
 
+import com.example.sshopping.CommandeActivity;
 import com.example.sshopping.MainActivity;
 import com.example.sshopping.PromotionActivity;
 import com.example.sshopping.R;
@@ -36,7 +37,8 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 		this.findViewById(R.id.slide_menu_smartlist).setOnClickListener(this);
 		this.findViewById(R.id.slide_menu_plan).setOnClickListener(this);
 		this.findViewById(R.id.slide_menu_coupons).setOnClickListener(this);
-		this.findViewById(R.id.slide_menu_parametre).setOnClickListener(this);
+		//this.findViewById(R.id.slide_menu_parametre).setOnClickListener(this);
+		this.findViewById(R.id.slide_menu_commande).setOnClickListener(this);
 		//this.findViewById(R.id.slide_menu_quit).setOnClickListener(this);
 	}
 
@@ -54,8 +56,10 @@ public class MainSlideMenu extends LinearLayout implements OnClickListener{
 			case R.id.slide_menu_coupons:
 				Intent switchActivityIntent1 = new Intent(this.getContext(), PromotionActivity.class);
 				this._parentActivity.startActivity(switchActivityIntent1);
-				break;	
-			case R.id.slide_menu_parametre:
+				break;
+			case R.id.slide_menu_commande:
+				Intent switchActivityIntent2 = new Intent(this.getContext(), CommandeActivity.class);
+				this._parentActivity.startActivity(switchActivityIntent2);
 				break;
 			//case R.id.slide_menu_quit:
 			//	System.exit(0);

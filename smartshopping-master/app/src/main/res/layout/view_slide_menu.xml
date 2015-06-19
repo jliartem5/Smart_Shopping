@@ -73,12 +73,12 @@
             android:textStyle="bold" 
             android:text="Mes coupons" />
     </LinearLayout>
-    
- 	<LinearLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:gravity="center_vertical"
-        android:id="@+id/slide_menu_parametre"
+        android:id="@+id/slide_menu_commande"
         android:background="@drawable/list_selector" >
 
         <ImageView
@@ -93,8 +93,8 @@
             android:layout_marginLeft="5dp"
             android:textSize="16sp"
             android:textColor="#1919A3"
-            android:textStyle="bold" 
-            android:text="Parametres" />
+            android:textStyle="bold"
+            android:text="Mes commandes" />
     </LinearLayout>
 
 </LinearLayout>

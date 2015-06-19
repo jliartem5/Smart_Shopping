@@ -14,6 +14,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import SmartShopping.OV.OVCommande;
 import SmartShopping.OV.OVPromotion;
 import SmartShopping.OV.OVUtilisateur;
 import SmartShopping.OV.RepPromotion;
@@ -60,11 +61,11 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 		deviceID = deviceID.substring(deviceID.length()-8, deviceID.length());
 
 		OVUtilisateur ovUtilisateur = new OVUtilisateur(Integer.parseInt(deviceID));
-	try {
-		nvp.add(new BasicNameValuePair("Utilisateur", ovUtilisateur.toJSON().toString()));
-	}catch (Exception e){
-		Log.i("Promotion LOG", e.getMessage());
-	}
+		try {
+			nvp.add(new BasicNameValuePair("Utilisateur", ovUtilisateur.toJSON().toString()));
+		}catch (Exception e){
+			Log.i("Promotion LOG", e.getMessage());
+		}
 		WebServer.getInstance().sendRequest(WebServer.COMMANDE.ToutesLesPromotions, nvp, new OnDataReturnListener(){
 
 			@Override
@@ -74,22 +75,22 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 				PromotionActivity.this._promotionList = repP.getListePromotion();
 				PromotionActivity.this.ShowPromotions();
 			}
-			
+
 		});
-		
+
 	}
-	
+
 	public void ShowPromotions(){
 		for(OVPromotion promo : this._promotionList){
-			final TableRow tableRow = new TableRow(this);      
+			final TableRow tableRow = new TableRow(this);
 			tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
 			TextView tv = new TextView(this);
 			tv.setText(promo.toString());
-			
+
 			final Button qrButton  = new Button(this);
 			qrButton.setText("QR");
 			qrButton.setTag(promo);
-			qrButton.setOnClickListener(new OnClickListener(){
+			qrButton.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
@@ -98,43 +99,43 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 
 					// 2. Chain together various setter methods to set the dialog characteristics
 					builder.setTitle("QR code")
-					 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-		               @Override
-		               public void onClick(DialogInterface dialog, int id) {
-		                   dialog.cancel();
-		               }
-					 });
-					
-					com.google.zxing.qrcode.QRCodeWriter qrCode = new QRCodeWriter();
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									dialog.cancel();
+								}
+							});
+
+					QRCodeWriter qrCode = new QRCodeWriter();
 					BitMatrix bm;
 					try {
 						bm = qrCode.encode(qrButton.getTag().toString(), BarcodeFormat.QR_CODE, 450, 450);
-				        Bitmap mBitmap = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Config.ARGB_8888);
-				        for (int i = 0; i < bm.getWidth(); i++) {
-				            for (int j = 0; j < bm.getHeight(); j++) {
-				                mBitmap.setPixel(i, j, bm.get(i, j) ? Color.BLACK: Color.WHITE);
-				            }
-				        }
-				        
+						Bitmap mBitmap = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Config.ARGB_8888);
+						for (int i = 0; i < bm.getWidth(); i++) {
+							for (int j = 0; j < bm.getHeight(); j++) {
+								mBitmap.setPixel(i, j, bm.get(i, j) ? Color.BLACK : Color.WHITE);
+							}
+						}
+
 						ImageView img = new ImageView(PromotionActivity.this);
 
-					    if(bm != null) {
-					        img.setImageBitmap(mBitmap);
-					    }
+						if (bm != null) {
+							img.setImageBitmap(mBitmap);
+						}
 						builder.setView(img);
 						// 3. Get the AlertDialog from create()
 						AlertDialog dialog = builder.create();
-						
+
 						dialog.show();
 					} catch (WriterException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
-					
+
 				}
 
-				
+
 			});
 			tableRow.addView(tv);
 			tableRow.addView(qrButton);

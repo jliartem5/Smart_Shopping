@@ -17,6 +17,15 @@ public class OVCommande extends OVObject {
     private int idSmartlist;
     private int idUtilisateur;
     private float montant;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public  OVCommande(int idsl, int idU, float mtant){
         this.idSmartlist = idsl;

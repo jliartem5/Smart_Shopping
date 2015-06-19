@@ -182,7 +182,6 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 			@Override
 			public void onClick(View arg0) {
 
-
 				ArrayList<Integer> listCategorieID = new ArrayList<Integer>();
 
 				// clear la liste des produits établis, sinon doublons
@@ -541,12 +540,29 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 			int distance = toProximity.getValue();
 
 			if(minor == 764 ){
-				if( MainActivity.this._mySmartList != null) {
+				if( MainActivity.this._mySmartList != null && MainActivity.this._allProduits != null) {
 					Log.i("COMMANDE LOG", "BEACON caisse detecté");
 					TelephonyManager mngr = (TelephonyManager) MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
 					String str = mngr.getDeviceId();
 					str = str.substring(str.length() - 8, str.length());
-					OVCommande ovCommande = new OVCommande(MainActivity.this._mySmartList.getId(), Integer.parseInt(str), 0);
+
+					double montantTotal = 0;
+
+					List<OVListeProduit> currentProd = MainActivity.this._mySmartList.getProduitsSmartList();
+					/*for(int i=0; i<currentProd.size();++i){
+						int idProd = currentProd.get(i).getIdProduit();
+						for(int j=0; j<MainActivity.this._allProduits.size(); ++j){
+							OVProduit prod = MainActivity.this._allProduits.get(i);
+							if(prod.getId() == idProd){
+								montantTotal += prod.getPrix();
+								break;
+							}
+						}
+					}*/
+					OVCommande ovCommande = new OVCommande(MainActivity.this._mySmartList.getId(), Integer.parseInt(str), (float)montantTotal);
+
+
+
 					WebServer ws = WebServer.getInstance();
 					try {
 						List<NameValuePair> nvp = new ArrayList<NameValuePair>();
@@ -556,8 +572,10 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 						ws.sendRequest(WebServer.COMMANDE.InsererCommande, nvp, new OnDataReturnListener() {
 							@Override
 							public void OnDataReturn(JSONObject jobj) {
+
 								SimpleNotification simpleNotification = new SimpleNotification(MainActivity.this, "Vous avez payé la commande !");
 								simpleNotification.Show();
+
 								Log.i("COMMANDE LOG", jobj.toString());
 							}
 						});
@@ -567,7 +585,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else{
+				} else {
 					Log.i("BEACON LOG", "But SmartList NULL");
 				}
 			}else {
@@ -582,6 +600,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 					@Override
 					public void OnDataReturn(JSONObject jobj) {
 						RepNotification repN = new RepNotification();
+
 
 
 						try {
