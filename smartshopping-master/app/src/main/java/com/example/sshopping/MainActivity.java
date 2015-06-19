@@ -538,9 +538,10 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 			Log.i("BEACON LOG", "Major:"+major+";"+"Minor:"+minor);
 
 			int distance = toProximity.getValue();
+			Log.i("COMMANDE LOG", "BEACON Minor:"+minor+"; distance:"+distance);
 
-			if(minor == 764 && distance == SBBeacon.Proximity.IMMEDIATE.getValue()){
-				if( MainActivity.this._mySmartList != null && MainActivity.this._allProduits != null) {
+			if(minor == 764){
+				if( distance == SBBeacon.Proximity.IMMEDIATE.getValue() && MainActivity.this._mySmartList != null && MainActivity.this._allProduits != null) {
 					Log.i("COMMANDE LOG", "BEACON caisse detecté");
 					TelephonyManager mngr = (TelephonyManager) MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
 					String str = mngr.getDeviceId();
