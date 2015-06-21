@@ -10,6 +10,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
+/**
+ * Classe de popup
+ */
 public class PlaceSelectPopupWindow extends PopupWindow{
 	
 	Button btn;

@@ -32,6 +32,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+/**
+ * Classe Adapter pour la liste des produits
+ */
 public class MainListProduitAdapter extends BaseAdapter{
 
 	public List<OVListeProduit> smartList = new ArrayList<OVListeProduit>();

@@ -32,7 +32,8 @@ public class SmartPlanActivity extends Activity {
 	
 	int requestCode;
 	boolean isReadOnly = false;
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,6 +72,9 @@ public class SmartPlanActivity extends Activity {
 		}*/
 	}
 
+	/**
+	 * Afficher popup de séléection
+	 */
 	public void ShowPopupWindow(){
 		if(this.isReadOnly)
 		{

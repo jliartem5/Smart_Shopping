@@ -29,6 +29,9 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
+/**
+ * Classe de la carte du margasin
+ */
 public class SmartPlanView extends SurfaceView implements Callback,
 		Runnable {
 
@@ -155,6 +158,10 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		this.context.HidePopupWindow();
 	}
 
+	/**
+	 *
+	 * @param holder
+	 */
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		this.screenSize = new Point(this.getWidth(), this.getHeight());
@@ -278,6 +285,9 @@ public class SmartPlanView extends SurfaceView implements Callback,
 		}
 	}
 
+	/**
+	 * Redissner la carte
+	 */
 	private void redraw() {
 		synchronized (this.holder) {
 			Canvas canvas = this.holder.lockCanvas();

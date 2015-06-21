@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Classe Dijkstra, retourne la distance minimum
+ */
 public class Dijkstra
 {
     public static void computePaths(Vertex source)

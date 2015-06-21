@@ -1,6 +1,8 @@
 package SmartShopping.ShortestPath;
 
-
+/**
+ * Classe vertex de la carte
+ */
 public class Vertex implements Comparable<Vertex>
 {
     public final String name;

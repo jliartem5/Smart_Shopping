@@ -91,7 +91,11 @@ public class HttpClients {
 		return errorJSONobj;
 	}
 
-
+	/**
+	 * Convertir le stream to string
+	 * @param is
+	 * @return
+	 */
 	private static String convertStreamToString(InputStream is) {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));

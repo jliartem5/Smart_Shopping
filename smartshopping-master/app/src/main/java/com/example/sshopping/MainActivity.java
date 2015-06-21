@@ -242,7 +242,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 				}
 			}
 		});
-
+		//On trouve l'utilisateur et SmartListe
 		ReqUtilisateur reqUtilisateur = new ReqUtilisateur();
 		TelephonyManager mngr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		reqUtilisateur.requestUser(mngr.getDeviceId(), new OnDataReturnListener() {
@@ -528,6 +528,13 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 		return this._mySmartList;
 	}
 
+	/**
+	 * Fonction pour Beacon, elle détecte la distance du Beacon et faire ce qui est nécessaire
+	 *
+	 * @param beacon
+	 * @param fromProximity
+	 * @param toProximity
+	 */
 	@Override
 	public void onUpdatedProximity(SBBeacon beacon, SBBeacon.Proximity fromProximity, SBBeacon.Proximity toProximity) {
 

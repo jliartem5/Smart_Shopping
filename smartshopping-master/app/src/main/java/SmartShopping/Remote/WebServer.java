@@ -21,6 +21,9 @@ import com.example.sshopping.http.OnDataReturnListener;
 import SmartShopping.OV.OVRep;
 import SmartShopping.OV.OVReq;
 
+/**
+ * Classe de connexion internet avec serveur distant
+ */
 public class WebServer {
 	
 	

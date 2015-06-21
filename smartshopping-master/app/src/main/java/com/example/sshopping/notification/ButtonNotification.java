@@ -20,6 +20,7 @@ import SmartShopping.OV.OVReponse;
 import SmartShopping.OV.ReqNotification;
 
 /**
+ * Classe de notification avec bouton
  * Created by jianli on 07/05/2015.
  */
 public class ButtonNotification extends Notification {
@@ -82,6 +83,10 @@ public class ButtonNotification extends Notification {
 
     }
 
+    /**
+     * Accepter le promotion
+     * @param ovNotification
+     */
     public void clickAccpeterPromotion(OVNotification ovNotification){
         response.setEtat(1);
         ovNotification.setReponseEnvoye(response);

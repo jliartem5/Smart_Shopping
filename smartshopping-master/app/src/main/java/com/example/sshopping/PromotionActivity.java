@@ -46,6 +46,11 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 	private DrawerLayout	_drawerLayout;
 	private List<OVPromotion> _promotionList = null;
 	private TableLayout _tablePromotion;
+
+	/***
+	 *
+	 * @param savedInstanceState
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,6 +85,9 @@ public class PromotionActivity  extends Activity implements ISlideMenuActivity{
 
 	}
 
+	/**
+	 * Afficher la liste des promotions
+	 */
 	public void ShowPromotions(){
 		for(OVPromotion promo : this._promotionList){
 			final TableRow tableRow = new TableRow(this);

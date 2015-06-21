@@ -24,6 +24,9 @@ import android.graphics.Rect;
 import android.graphics.BlurMaskFilter.Blur;
 import android.util.Log;
 
+/**
+ * Classse qui permet de dessiner le trajet sur la carte du magasin
+ */
 public class PathDrawer {
 	
 	private Point planOffset;//
@@ -52,7 +55,11 @@ public class PathDrawer {
 		Log.v("Path length:", path.size()+"");
 
 	}
-	
+
+	/**
+	 * Dessiner le path
+	 * @param canvas
+	 */
 	public void Draw(Canvas canvas){
 
 		Paint paint = new Paint();
@@ -134,7 +141,12 @@ public class PathDrawer {
 		int position= (drawPosition + offsetNoeud) * caseSideSize - (caseSideSize /2);
 		return position;
 	}
-	
+
+	/**
+	 * Calculer la distance et position normalisé
+	 * @param mapPosition
+	 * @return
+	 */
 	public Point CalculMapDrawNormalizedPosition(int mapPosition){
 		if(mapPosition <= 0){
 			return null;
