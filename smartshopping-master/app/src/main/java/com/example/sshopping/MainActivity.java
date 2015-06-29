@@ -104,7 +104,7 @@ public class MainActivity extends FragmentActivity implements ISlideMenuActivity
 	private Button _speedShopping;
 	public static boolean boucleNotif = false;
 	public static long boucleNotifTime = 0;
-	public int delayNotif = 20000; //180000ms -> 3min, 60000ms -> 1min
+	public int delayNotif = 5000; //180000ms -> 3min, 60000ms -> 1min
 
     // btn pormotion avec reponse en cours
     private ButtonNotification btnNotif = null;
